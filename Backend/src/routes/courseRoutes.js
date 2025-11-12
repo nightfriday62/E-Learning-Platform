@@ -1,7 +1,7 @@
 import express from 'express';
 import courseController from '../controllers/courseController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
-import { memoryUpload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
+import { memoryUpload, s3Upload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
@@ -21,14 +21,14 @@ router.put('/:courseId/modules', courseController.updateModules);
 // Material management routes
 router.post(
     '/:courseId/materials', 
-    memoryUpload.array('files', 20),
+    s3Upload.array('files', 20),
     handleUploadError,
     courseController.uploadMaterial
 );
 
 router.post(
     '/:courseId/modules/:moduleId/materials', 
-    memoryUpload.array('files', 20),
+    s3Upload.array('files', 20),
     handleUploadError,
     courseController.uploadMaterial
 );

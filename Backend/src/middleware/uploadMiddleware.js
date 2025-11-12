@@ -1,7 +1,6 @@
 import multer from 'multer';
-import multerS3 from 'multer-s3';
-import { s3Client, S3_CONFIG } from '../config/aws.js';
 import path from 'path';
+import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 // Allowed file types for course materials
@@ -34,45 +33,42 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// S3 storage configuration
-const s3Storage = multerS3({
-    s3: s3Client,
-    bucket: S3_CONFIG.bucketName,
-    serverSideEncryption: 'AES256',
-    key: function (req, file, cb) {
-        const { courseId, moduleId } = req.params;
-        const fileExtension = path.extname(file.originalname);
-        const uniqueFileName = `${uuidv4()}${fileExtension}`;
-        
-        // Create folder structure
-        let key = `courses/${courseId}/`;
-        if (moduleId) {
-            key += `modules/${moduleId}/`;
-        }
-        key += uniqueFileName;
-        
-        // Store key in request for later use
-        req.s3Key = key;
-        cb(null, key);
-    },
-    metadata: function (req, file, cb) {
-        cb(null, {
-            originalName: file.originalname,
-            courseId: req.params.courseId || '',
-            moduleId: req.params.moduleId || '',
-            uploadedBy: req.user?.id || '',
-            uploadedAt: new Date().toISOString()
-        });
-    },
-    contentType: multerS3.AUTO_CONTENT_TYPE
-});
+// Local disk storage configuration (dev-friendly)
+const BASE_UPLOADS_DIR = path.join(process.cwd(), 'uploads');
 
-// Memory storage for custom processing
+// Ensure base uploads directory exists
+if (!fs.existsSync(BASE_UPLOADS_DIR)) {
+    fs.mkdirSync(BASE_UPLOADS_DIR, { recursive: true });
+}
+
+// Memory storage for cases where you want to process before saving (kept for parity)
 const memoryStorage = multer.memoryStorage();
 
-// Create upload middleware with S3 storage
+// Disk storage for materials (replaces S3 storage for local development)
+const diskStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const { courseId, moduleId } = req.params || {};
+        // Build a sensible folder structure under uploads/
+        let dest = path.join(BASE_UPLOADS_DIR, 'courses');
+        if (courseId) dest = path.join(dest, String(courseId));
+        if (moduleId) dest = path.join(dest, 'modules', String(moduleId));
+
+        // Ensure destination exists
+        fs.mkdirSync(dest, { recursive: true });
+        cb(null, dest);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname) || '';
+        const filename = `${uuidv4()}${ext}`;
+        // Store relative saved path on the request so other middleware/controllers can use it
+        req.savedFilePath = path.join('uploads', 'courses', req.params.courseId || '', req.params.moduleId ? path.join('modules', String(req.params.moduleId), filename) : filename);
+        cb(null, filename);
+    }
+});
+
+// Create upload middleware using diskStorage (keeps the old name `s3Upload` as a drop-in)
 const s3Upload = multer({
-    storage: s3Storage,
+    storage: diskStorage,
     fileFilter: fileFilter,
     limits: {
         fileSize: FILE_SIZE_LIMITS.default,
@@ -80,13 +76,13 @@ const s3Upload = multer({
     }
 });
 
-// Create upload middleware with memory storage (for custom S3 handling)
+// Create upload middleware with memory storage (for custom processing)
 const memoryUpload = multer({
     storage: memoryStorage,
     fileFilter: fileFilter,
     limits: {
         fileSize: FILE_SIZE_LIMITS.default,
-        files: 20 // Maximum 20 files per request
+        files: 20
     }
 });
 
@@ -101,9 +97,24 @@ const thumbnailFilter = (req, file, cb) => {
     }
 };
 
-// Create thumbnail upload middleware
+// Create thumbnail upload middleware (save to uploads/thumbnails)
+const thumbnailStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const dest = path.join(BASE_UPLOADS_DIR, 'thumbnails');
+        fs.mkdirSync(dest, { recursive: true });
+        cb(null, dest);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname) || '';
+        const filename = `${uuidv4()}${ext}`;
+        // expose saved path for controllers
+        req.savedFilePath = path.join('uploads', 'thumbnails', filename);
+        cb(null, filename);
+    }
+});
+
 const thumbnailUpload = multer({
-    storage: memoryStorage,
+    storage: thumbnailStorage,
     fileFilter: thumbnailFilter,
     limits: {
         fileSize: 2 * 1024 * 1024, // 2MB for thumbnails

@@ -1,6 +1,10 @@
 import { Course, Material, Progress, Enrollment, User } from '../models/index.js';
 import s3Service from '../services/s3Service.js';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+
+const USE_S3 = process.env.USE_S3 === 'true';
 
 // Helper function to determine file type
 const getFileType = (mimeType) => {
@@ -219,11 +223,18 @@ class CourseController {
 
 
 
-            // Delete associated materials from S3
+            // Delete associated materials from storage (S3 or local)
             const materials = await Material.find({ courseId });
             for (const material of materials) {
-                if (material.cloudKey) {
-                    await s3Service.deleteFile(material.cloudKey);
+                try {
+                    if (material.storageType === 's3' && material.cloudKey) {
+                        await s3Service.deleteFile(material.cloudKey);
+                    } else if (material.storageType === 'local' && material.url) {
+                        const filePath = path.join(process.cwd(), material.url.replace(/^\//, ''));
+                        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                    }
+                } catch (err) {
+                    console.error('Failed to delete material from storage during course deletion:', err);
                 }
             }
 
@@ -261,7 +272,7 @@ class CourseController {
         try {
             const { courseId, moduleId } = req.params;
             const files = req.files;
-
+            console.log("I am here");
             if (!files || files.length === 0) {
                 return res.status(400).json({
                     success: false,
@@ -280,27 +291,49 @@ class CourseController {
             const uploadedMaterials = [];
 
             for (const file of files) {
-                // Upload to S3 using our service
-                const uploadResult = await s3Service.uploadFile(
-                    file.buffer,
-                    file.originalname,
-                    file.mimetype,
-                    courseId,
-                    moduleId
-                );
+                // Two possible flows:
+                // 1) File data is in memory (file.buffer) -> upload to S3 if enabled
+                // 2) File was saved to disk by middleware -> file.path or req.savedFilePath available -> keep local
 
-                // Create material record in database
-                const material = new Material({
-                    filename: file.originalname,
-                    type: getFileType(file.mimetype),
-                    storageType: 's3',
-                    url: uploadResult.url,
-                    cloudKey: uploadResult.key,
-                    courseId: courseId
-                });
+                if (file && file.buffer && USE_S3) {
+                    // Upload to S3 using our service
+                    const uploadResult = await s3Service.uploadFile(
+                        file.buffer,
+                        file.originalname,
+                        file.mimetype,
+                        courseId,
+                        moduleId
+                    );
 
-                await material.save();
-                uploadedMaterials.push(material);
+                    // Create material record in database (S3)
+                    const material = new Material({
+                        filename: file.originalname,
+                        type: getFileType(file.mimetype),
+                        storageType: 's3',
+                        url: uploadResult.url,
+                        cloudKey: uploadResult.key,
+                        courseId: courseId
+                    });
+
+                    await material.save();
+                    uploadedMaterials.push(material);
+                } else {
+                    // Local disk flow: prefer req.savedFilePath (set by disk storage middleware), fallback to file.path
+                    const relativePath = (req.savedFilePath) ? req.savedFilePath : (file.path ? path.relative(process.cwd(), file.path) : null);
+                    const urlPath = relativePath ? `/${relativePath.replace(/\\/g, '/')}` : null;
+                    console.log('Local file saved at URL path:', urlPath);
+                    const material = new Material({
+                        filename: file.originalname,
+                        type: getFileType(file.mimetype || ''),
+                        storageType: 'local',
+                        url: urlPath || '',
+                        cloudKey: null,
+                        courseId: courseId
+                    });
+
+                    await material.save();
+                    uploadedMaterials.push(material);
+                }
             }
 
             res.status(201).json({
@@ -335,15 +368,20 @@ class CourseController {
                 });
             }
 
-            // Generate signed URL for secure access
-            const signedUrl = await s3Service.getSignedUrl(material.cloudKey);
+            // If material is stored in S3, generate a signed URL. For local files just return the stored URL path.
+            let secureUrl = null;
+            if (material.storageType === 's3' && material.cloudKey) {
+                secureUrl = await s3Service.getSignedUrl(material.cloudKey);
+            } else if (material.storageType === 'local' && material.url) {
+                secureUrl = material.url; // served via static route (e.g., /uploads/...)
+            }
 
             res.json({
                 success: true,
                 data: {
                     material: {
                         ...material.toObject(),
-                        secureUrl: signedUrl
+                        secureUrl
                     }
                 }
             });
@@ -403,14 +441,20 @@ class CourseController {
                 }
             }
 
-            // Delete from S3
-            if (material.cloudKey) {
-                try {
+            // Delete from storage
+            try {
+                if (material.storageType === 's3' && material.cloudKey) {
                     await s3Service.deleteFile(material.cloudKey);
-                } catch (s3Error) {
-                    console.error('Failed to delete from S3:', s3Error);
-                    // Continue with database deletion even if S3 fails
+                } else if (material.storageType === 'local' && material.url) {
+                    // material.url is stored as a relative path like '/uploads/...'
+                    const filePath = path.join(process.cwd(), material.url.replace(/^\//, ''));
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
                 }
+            } catch (err) {
+                console.error('Failed to delete material from storage:', err);
+                // Continue with database deletion
             }
 
             // Delete from database
@@ -489,15 +533,18 @@ class CourseController {
                     // Get material details for S3 deletion
                     const materials = await Material.find({ _id: { $in: materialsToDelete } });
                     
-                    // Delete from S3
+                    // Delete from storage (S3 or local)
                     for (const material of materials) {
-                        if (material.cloudKey) {
-                            try {
+                        try {
+                            if (material.storageType === 's3' && material.cloudKey) {
                                 await s3Service.deleteFile(material.cloudKey);
-                            } catch (s3Error) {
-                                console.error('Failed to delete from S3:', s3Error);
-                                // Continue with database deletion even if S3 fails
+                            } else if (material.storageType === 'local' && material.url) {
+                                const filePath = path.join(process.cwd(), material.url.replace(/^\//, ''));
+                                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
                             }
+                        } catch (s3Error) {
+                            console.error('Failed to delete material from storage:', s3Error);
+                            // Continue with database deletion even if storage deletion fails
                         }
                     }
 
@@ -596,25 +643,44 @@ class CourseController {
             }
 
             // Delete old thumbnail if exists
-            if (course.thumbnail?.cloudKey) {
-                await s3Service.deleteFile(course.thumbnail.cloudKey);
+            try {
+                if (course.thumbnail?.cloudKey) {
+                    await s3Service.deleteFile(course.thumbnail.cloudKey);
+                } else if (course.thumbnail?.url) {
+                    const oldPath = path.join(process.cwd(), course.thumbnail.url.replace(/^\//, ''));
+                    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+                }
+            } catch (err) {
+                console.error('Failed to delete previous thumbnail:', err);
             }
 
-            // Upload new thumbnail to S3
-            const uploadResult = await s3Service.uploadFile(
-                file.buffer,
-                file.originalname,
-                file.mimetype,
-                courseId,
-                'thumbnail' // Special folder for thumbnails
-            );
+            // Upload new thumbnail either to S3 (if enabled and buffer available) or keep local path
+            if (file && file.buffer && USE_S3) {
+                const uploadResult = await s3Service.uploadFile(
+                    file.buffer,
+                    file.originalname,
+                    file.mimetype,
+                    courseId,
+                    'thumbnail'
+                );
 
-            // Update course with thumbnail info
-            course.thumbnail = {
-                url: uploadResult.url,
-                cloudKey: uploadResult.key,
-                filename: file.originalname
-            };
+                // Update course with thumbnail info (S3)
+                course.thumbnail = {
+                    url: uploadResult.url,
+                    cloudKey: uploadResult.key,
+                    filename: file.originalname
+                };
+            } else {
+                // Local thumbnail saved by middleware
+                const relativePath = req.savedFilePath ? req.savedFilePath : (file.path ? path.relative(process.cwd(), file.path) : null);
+                const urlPath = relativePath ? `/${relativePath.replace(/\\/g, '/')}` : null;
+
+                course.thumbnail = {
+                    url: urlPath,
+                    cloudKey: null,
+                    filename: file.originalname
+                };
+            }
 
             await course.save();
 
@@ -652,15 +718,24 @@ class CourseController {
                 });
             }
 
-            if (!course.thumbnail?.cloudKey) {
+            if (!course.thumbnail?.cloudKey && !course.thumbnail?.url) {
                 return res.status(404).json({
                     success: false,
                     message: 'No thumbnail found for this course'
                 });
             }
 
-            // Delete from S3
-            await s3Service.deleteFile(course.thumbnail.cloudKey);
+            // Delete from storage
+            try {
+                if (course.thumbnail?.cloudKey) {
+                    await s3Service.deleteFile(course.thumbnail.cloudKey);
+                } else if (course.thumbnail?.url) {
+                    const filePath = path.join(process.cwd(), course.thumbnail.url.replace(/^\//, ''));
+                    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                }
+            } catch (err) {
+                console.error('Failed to delete thumbnail from storage:', err);
+            }
 
             // Remove thumbnail from course
             course.thumbnail = {
@@ -694,23 +769,27 @@ class CourseController {
             const { courseId } = req.params;
 
             const course = await Course.findById(courseId);
-            if (!course || !course.thumbnail?.cloudKey) {
+            if (!course || (!course.thumbnail?.cloudKey && !course.thumbnail?.url)) {
                 return res.status(404).json({
                     success: false,
                     message: 'No thumbnail found for this course'
                 });
             }
 
-            // For thumbnails, you might want public URLs instead of signed URLs
-            // But here's how to get a signed URL if needed:
-            const signedUrl = await s3Service.getSignedUrl(course.thumbnail.cloudKey);
+            let secureUrl = null;
+            if (course.thumbnail?.cloudKey) {
+                secureUrl = await s3Service.getSignedUrl(course.thumbnail.cloudKey);
+            } else if (course.thumbnail?.url) {
+                secureUrl = course.thumbnail.url; 
+                console.log("Local file saved at URL path:", secureUrl);
+            }
 
             res.json({
                 success: true,
                 data: {
                     thumbnail: {
                         ...course.thumbnail,
-                        secureUrl: signedUrl
+                        secureUrl
                     }
                 }
             });
