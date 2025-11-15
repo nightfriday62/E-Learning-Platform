@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useCourses } from '../contexts/CourseContext';
 import type { CourseData } from '../types/course.types';
 import { Course } from './Course';
+import { useLocation } from 'react-router-dom';
 
 export const GameContainer = () => {
   const { courses, getThumbnailSecureUrl } = useCourses();
@@ -9,6 +10,7 @@ export const GameContainer = () => {
     CourseData[]
   >([]);
   const [openedCourse, setOpenedCourse] = useState<CourseData | null>(null);
+  const location = useLocation();
 
   const bgUrl = '/assets/images/Login-Background.png';
 
@@ -39,6 +41,16 @@ export const GameContainer = () => {
     }
   }, [courses, getThumbnailSecureUrl]);
 
+  // Auto-open course if `courseId` query param is present
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const courseIdParam = params.get('courseId');
+    if (courseIdParam && coursesWithThumbnails.length > 0) {
+      const target = coursesWithThumbnails.find((c) => c._id === courseIdParam);
+      if (target) setOpenedCourse(target);
+    }
+  }, [location.search, coursesWithThumbnails]);
+
   return (
     <div
       className="game-container relative w-full h-full bg-center"
@@ -60,7 +72,7 @@ export const GameContainer = () => {
               onClick={() => handleCourseClick(course)}
             />
           ))
-        )}
+        )} 
       </div>
     </div>
   );

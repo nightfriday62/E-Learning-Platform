@@ -1,6 +1,7 @@
 import { Enrollment, User } from "../models/index.js";
 import { Course } from "../models/course.js";
 import Progress from "../models/progress.js";
+import { Quiz } from "../models/quiz.js";
 
 class studyController {
 	async getCourses(req, res) {
@@ -30,8 +31,8 @@ class studyController {
           const modulesWithProgress = course.modules.map((mod) => {
             const modObj = mod.toObject();
             const progressEntry = progressMap.get(mod._id.toString());
-            modObj.stars = progressEntry?.stars ?? 0;
-            modObj.isOpen = progressEntry?.isOpen ?? false;
+            modObj.stars = progressEntry?.stars ?? 1;
+            modObj.isOpen = progressEntry?.isOpen ?? true;
             return modObj;
           });
 
@@ -56,7 +57,21 @@ class studyController {
 		}
   }
 
+  async getQuiz(req, res) {
+    try {
+      const { courseId, moduleId } = req.params;
 
+      const quiz = await Quiz.findOne({ courseId, moduleId });
+      if (!quiz) {
+        return res.status(404).json({ success: false, message: 'Quiz not found' });
+      }
+
+      res.json({ success: true, data: quiz });
+    } catch (error) {
+      console.error('Get Quiz Error:', error);
+      res.status(500).json({ success: false, message: 'Failed to get quiz', error: error.message });
+    }
+  }
 }
 
 export default new studyController();

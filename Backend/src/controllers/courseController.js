@@ -4,7 +4,13 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 
-const USE_S3 = process.env.USE_S3 === 'true';
+// helper: convert a stored relative URL (e.g. "/uploads/...") to an absolute URL using the incoming request
+const toFullUrl = (req, relativePath) => {
+  if (!relativePath) return null;
+  if (/^https?:\/\//i.test(relativePath)) return relativePath; // already absolute
+  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  return `${proto}://${req.get('host')}${relativePath}`;
+};
 
 // Helper function to determine file type
 const getFileType = (mimeType) => {
@@ -368,13 +374,11 @@ class CourseController {
                 });
             }
 
-            // If material is stored in S3, generate a signed URL. For local files just return the stored URL path.
-            let secureUrl = null;
-            if (material.storageType === 's3' && material.cloudKey) {
-                secureUrl = await s3Service.getSignedUrl(material.cloudKey);
-            } else if (material.storageType === 'local' && material.url) {
-                secureUrl = material.url; // served via static route (e.g., /uploads/...)
-            }
+            // Return the backend download endpoint so clients always fetch
+            // the material via our server which will handle S3 redirect or
+            // local-file streaming. This centralizes access control.
+            const downloadPath = `/api/courses/materials/${materialId}/download`;
+            const secureUrl = toFullUrl(req, downloadPath);
 
             res.json({
                 success: true,
@@ -393,6 +397,58 @@ class CourseController {
                 message: 'Failed to retrieve material',
                 error: error.message
             });
+        }
+    }
+
+    /**
+     * Download material file (redirect to S3 signed URL or send local file)
+     */
+    async downloadMaterial(req, res) {
+        try {
+            const { materialId } = req.params;
+
+            const material = await Material.findById(materialId);
+
+            if (!material) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Material not found'
+                });
+            }
+
+            // If stored in S3 and we're using S3, redirect to a signed URL
+            if (material.storageType === 's3' && material.cloudKey && USE_S3) {
+                try {
+                    const signedUrl = await s3Service.getSignedUrl(material.cloudKey);
+                    return res.redirect(signedUrl);
+                } catch (err) {
+                    console.error('Failed to get signed URL for material:', err);
+                    return res.status(500).json({ success: false, message: 'Failed to retrieve material' });
+                }
+            }
+
+            // Otherwise serve local file from uploads
+            if (material.storageType === 'local' && material.url) {
+                const filePath = path.join(process.cwd(), material.url.replace(/^\//, ''));
+                if (!fs.existsSync(filePath)) {
+                    return res.status(404).json({ success: false, message: 'Material file not found on server' });
+                }
+
+                const filename = material.filename || path.basename(filePath);
+                return res.download(filePath, filename, (err) => {
+                    if (err) {
+                        console.error('Error sending material file:', err);
+                        if (!res.headersSent) {
+                            res.status(500).json({ success: false, message: 'Failed to send material' });
+                        }
+                    }
+                });
+            }
+
+            return res.status(400).json({ success: false, message: 'Material not available for download' });
+        } catch (error) {
+            console.error('Download Material Error:', error);
+            res.status(500).json({ success: false, message: 'Failed to download material', error: error.message });
         }
     }
 
@@ -776,13 +832,11 @@ class CourseController {
                 });
             }
 
-            let secureUrl = null;
-            if (course.thumbnail?.cloudKey) {
-                secureUrl = await s3Service.getSignedUrl(course.thumbnail.cloudKey);
-            } else if (course.thumbnail?.url) {
-                secureUrl = course.thumbnail.url; 
-                console.log("Local file saved at URL path:", secureUrl);
-            }
+            // Return the backend download endpoint so clients always fetch
+            // the thumbnail via our server which will handle S3 redirect or
+            // local-file streaming. This keeps access consistent.
+            const downloadPath = `/api/courses/${courseId}/thumbnail-download`;
+            const secureUrl = toFullUrl(req, downloadPath);
 
             res.json({
                 success: true,
@@ -804,6 +858,89 @@ class CourseController {
         }
     }
 
+    /**
+     * Download thumbnail file (redirect to S3 signed URL or send local file)
+     */
+    async downloadThumbnail(req, res) {
+        try {
+            const { courseId } = req.params;
+
+            const course = await Course.findById(courseId);
+            if (!course || (!course.thumbnail?.cloudKey && !course.thumbnail?.url)) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No thumbnail found for this course'
+                });
+            }
+
+            // If thumbnail stored in S3, get a signed URL and redirect to it
+            if (course.thumbnail?.cloudKey && USE_S3) {
+                try {
+                    const signedUrl = await s3Service.getSignedUrl(course.thumbnail.cloudKey);
+                    return res.redirect(signedUrl);
+                } catch (err) {
+                    console.error('Failed to get signed URL for thumbnail:', err);
+                    return res.status(500).json({ success: false, message: 'Failed to retrieve thumbnail' });
+                }
+            }
+
+            // Otherwise serve local file from uploads
+            if (course.thumbnail?.url) {
+                const filePath = path.join(process.cwd(), course.thumbnail.url.replace(/^\//, ''));
+                if (!fs.existsSync(filePath)) {
+                    return res.status(404).json({ success: false, message: 'Thumbnail file not found on server' });
+                }
+
+                const filename = course.thumbnail.filename || path.basename(filePath);
+                return res.download(filePath, filename, (err) => {
+                    if (err) {
+                        console.error('Error sending thumbnail file:', err);
+                        if (!res.headersSent) {
+                            res.status(500).json({ success: false, message: 'Failed to send thumbnail' });
+                        }
+                    }
+                });
+            }
+
+            return res.status(400).json({ success: false, message: 'Thumbnail not available' });
+        } catch (error) {
+            console.error('Download Thumbnail Error:', error);
+            res.status(500).json({ success: false, message: 'Failed to download thumbnail', error: error.message });
+        }
+    }
+    async getAllMaterialsHandler(req, res) {
+        try {
+            const materials = await Material.find().lean();
+            // const course = await Course.findById('6912adcf0cceb3d617e5d0c4');
+            // const module = course.modules.id('6912b0480cceb3d617e5d0ca');
+            // module.materials.push({materialId: new mongoose.Types.ObjectId('6913a620c2d0c36bbcb91ac6')});
+            // module.materials.push({materialId: new mongoose.Types.ObjectId('6913add7c2d0c36bbcb91ae6')});
+            // await course.save();
+            // const materialIds = ['6913a620c2d0c36bbcb91ac6', '6913add7c2d0c36bbcb91ae6'];
+
+            // // load Material docs
+            // const materials2 = await Material.find({ _id: { $in: materialIds } }).lean();
+
+            // // create the subdocuments expected by your Course schema
+            // module.materials = materials2.map((m, idx) => ({
+            //     materialId: new mongoose.Types.ObjectId(m._id),
+            //     name: m.filename || m.originalname || 'unnamed',
+            //     type: m.type || getFileType(m.mimetype || ''),
+            //     order: typeof m.order === 'number' ? m.order : idx
+            // }));
+
+            // await course.save();
+            return res.json({ success: true, data: materials });
+        } catch (err) {
+            return res.status(500).json({ success: false, message: err.message });
+        }
+    }
 }
 
-export default new CourseController(); 
+export default new CourseController();
+
+//6913a620c2d0c36bbcb91ac6
+//6913add7c2d0c36bbcb91ae6
+
+// module 6912b0480cceb3d617e5d0ca
+// course 6912adcf0cceb3d617e5d0c4

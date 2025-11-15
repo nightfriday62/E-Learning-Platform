@@ -7,6 +7,7 @@ const router = express.Router();
 router.use(authenticateToken);
 
 router.get('/:userId/courses', studyController.getCourses);
+router.get('/quiz/:courseId/:moduleId', studyController.getQuiz);
 
 
 export default router

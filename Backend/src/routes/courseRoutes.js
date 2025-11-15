@@ -4,10 +4,11 @@ import { authenticateToken } from '../middleware/authMiddleware.js';
 import { memoryUpload, s3Upload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
-
+router.get('/materials/:materialId/download', courseController.downloadMaterial);
 // Apply authentication middleware to all routes
 router.use(authenticateToken);
 
+router.get('/materials-all', courseController.getAllMaterialsHandler);
 // Course CRUD routes
 router.post('/', courseController.createCourse);
 router.get('/', courseController.getAllCourses);
@@ -34,6 +35,8 @@ router.post(
 );
 
 router.get('/materials/:materialId', courseController.getMaterial);
+
+
 router.delete('/materials/:materialId', courseController.deleteMaterial);
 
 // Get presigned URL for direct client uploads
@@ -50,5 +53,5 @@ router.post(
 
 router.get('/:courseId/thumbnail', courseController.getThumbnail);
 router.delete('/:courseId/thumbnail', courseController.deleteThumbnail);
-
+router.get('/:courseId/thumbnail-download', courseController.downloadThumbnail);
 export default router; 

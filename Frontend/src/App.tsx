@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CourseProvider } from './contexts/CourseContext';
 import { ProtectedRoute } from './routes';
 import { LoginPage, DashboardPage, ProfilePage } from './pages';
+import EarnStarsPage from './pages/EarnStarsPage';
 
 function App() {
   return (
@@ -33,6 +34,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/earn-stars/:courseId/:moduleId"
+                element={
+                  <ProtectedRoute>
+                    <EarnStarsPage />
                   </ProtectedRoute>
                 }
               />
