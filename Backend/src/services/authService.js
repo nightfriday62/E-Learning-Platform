@@ -68,7 +68,6 @@ class AuthService {
     if (!storedToken) {
       throw new Error('Invalid refresh token');
     }
-    console.log('Stored token:', storedToken);
     const user = storedToken.userId;
     if (!user) {
       throw new Error('User not found');
