@@ -43,6 +43,7 @@ class AuthService {
       token: refreshTokenValue,
       userId: user._id
     });
+    console.log('Saving refresh token:', refreshToken);
     await refreshToken.save();
 
     return {
@@ -67,7 +68,7 @@ class AuthService {
     if (!storedToken) {
       throw new Error('Invalid refresh token');
     }
-
+    console.log('Stored token:', storedToken);
     const user = storedToken.userId;
     if (!user) {
       throw new Error('User not found');

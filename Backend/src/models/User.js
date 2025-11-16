@@ -145,7 +145,7 @@ export const createUser = async (userData) => {
 };
 
 
-console.log("test")
+//console.log("test")
 if (true) {
   (async () => {
     try {
