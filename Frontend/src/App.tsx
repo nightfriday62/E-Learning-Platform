@@ -8,7 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CourseProvider } from './contexts/CourseContext';
 import { ProtectedRoute } from './routes';
 import { LoginPage, DashboardPage, ProfilePage } from './pages';
-import EarnStarsPage from './pages/EarnStarsPage';
+import QuizPage from './pages/QuizPage';
 import QuizIntro from './pages/QuizIntro';
 
 function App() {
@@ -52,7 +52,7 @@ function App() {
                 path="/earn-stars/:courseId/:moduleId"
                 element={
                   <ProtectedRoute>
-                    <EarnStarsPage />
+                    <QuizPage />
                   </ProtectedRoute>
                 }
               />
