@@ -185,7 +185,7 @@ export const Course = (course: CourseProps) => {
                     className="px-3 py-1 bg-red-500 text-white rounded text-sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/earn-stars/${course._id}/${module._id}`);
+                      navigate(`/quiz-intro/${course._id}/${module._id}`);
                     }}
                   >
                     Earn Stars
