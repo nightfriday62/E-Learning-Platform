@@ -15,18 +15,18 @@ export function Headers() {
     };
 
     return (
-        <div className="absolute left-0 top-0 w-full h-[95px] bg-[#BEC5D2] flex items-center justify-between px-8">
+        <div className="fixed inset-x-0 top-0 w-full h-[95px] bg-[#BEC5D2] flex items-center justify-between px-8 z-50">
         <div className="text-[#0F1437] text-[58px] font-['Tiny5'] ml-12">StarLeap</div>
         <div className="flex gap-4">
           <button 
             onClick={() => navigate('/profile')}
-            className="profile-button w-[160px] h-[50px] bg-[#D9D9D9] rounded-[10px] text-[#1E1E1E] text-[32px] font-['Tiny5'] flex items-center justify-center"
+            className="profile-button w-[160px] h-[50px] bg-[#D9D9D9] rounded-[10px] text-[#1E1E1E] text-[32px] font-['Tiny5'] flex items-center justify-center cursor-pointer hover:opacity-90"
           >
             PROFILE
           </button>
           <button 
             onClick={handleLogout}
-            className="logout-button w-[160px] h-[50px] bg-[#A93511] rounded-[10px] text-white text-[32px] font-['Tiny5'] flex items-center justify-center"
+            className="logout-button w-[160px] h-[50px] bg-[#A93511] rounded-[10px] text-white text-[32px] font-['Tiny5'] flex items-center justify-center cursor-pointer hover:opacity-90"
           >
             LOG OUT
           </button>

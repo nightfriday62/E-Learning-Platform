@@ -1,24 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+
 import { GameContainer } from '../components';
+import { Headers } from '../components/Header';
 
 export const DashboardPage: React.FC = () => {
-  const { logout } = useAuth();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden pt-6 md:pt-[95px]">
       {/* Navigation */}
       <nav className="bg-white shadow flex-shrink-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header><Headers /> </header>
+        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-bold text-[#fab630]">
@@ -40,7 +34,7 @@ export const DashboardPage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </nav>
 
       {/* Main Content */}
