@@ -68,6 +68,15 @@ const QuizPage: React.FC = () => {
     }
   };
 
+    const handlePrevious = () => {
+    if (!quiz) return;
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1);
+    } else {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = async () => {
     if (!quiz) return;
     setSubmitting(true);
@@ -255,6 +264,7 @@ const QuizPage: React.FC = () => {
             })}
 
             {/* Next button */}
+            <div className="flex flex-col items-center">
             <button
               onClick={handleNext}
               disabled={!selections[currentIndex] || submitting}
@@ -263,6 +273,15 @@ const QuizPage: React.FC = () => {
             >
               {currentIndex < quiz.questions.length - 1 ? 'Next' : (submitting ? 'Submitting...' : 'Submit')}
             </button>
+            <button
+              onClick={handlePrevious}
+              disabled={currentIndex === 0 || submitting}
+              className="next-button w-[286px] h-[49px] bg-[#B17F9E] rounded-[20px] text-white text-[24px] font-['Inter'] font-bold mt-4 disabled:opacity-45 transition-opacity"
+              style={{boxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.25)'}}
+            >
+              Previous
+            </button>
+            </div>
           </div>
         </>
       )}
