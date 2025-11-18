@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Headers } from '../components/Header';
 
 const QuizIntro: React.FC = () => {
   const navigate = useNavigate();
@@ -16,38 +17,12 @@ const QuizIntro: React.FC = () => {
     navigate(`/dashboard?${params.toString()}`);
   };
 
-  const handleProfile = () => {
-    navigate('/profile');
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
 
   return (
     <div className="fixed inset-0 bg-white">
       {/* Header */}
       <header className="h-[95px] bg-[#BEC5D2] flex items-center justify-between px-8">
-        <div className="text-[58px] font-normal text-[#0F1437]" style={{ fontFamily: 'Tiny5, -apple-system, Roboto, Helvetica, sans-serif' }}>
-          StarLeap
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={handleProfile}
-            className="w-[160px] h-[50px] rounded-[10px] bg-[#D9D9D9] text-[#1E1E1E] text-[32px] font-normal"
-            style={{ fontFamily: 'Tiny5, -apple-system, Roboto, Helvetica, sans-serif' }}
-          >
-            PROFILE
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-[160px] h-[50px] rounded-[10px] bg-[#A93511] text-white text-[32px] font-normal"
-            style={{ fontFamily: 'Tiny5, -apple-system, Roboto, Helvetica, sans-serif' }}
-          >
-            LOG OUT
-          </button>
-        </div>
+        <Headers />
       </header>
 
       {/* Main Content */}
