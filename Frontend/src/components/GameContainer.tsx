@@ -72,13 +72,16 @@ export const GameContainer = () => {
             <img
               key={course._id}
               src={course.thumbnail}
-              className="w-64 h-48 object-cover"
+              className="w-64 h-48 object-cover rounded-xl cursor-pointer transition duration-300 hover:ring-8 hover:ring-[#827a7a71]"
               alt={`Course thumbnail for ${course.title}`}
               onClick={() => handleCourseClick(course)}
             />
+            
           ))
         )} 
+        
       </div>
+      
     </div>
   );
 };

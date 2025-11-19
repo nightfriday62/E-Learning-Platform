@@ -30,7 +30,7 @@ export interface Module {
   materials: ModuleMaterial[];
   createdAt: string;
   updatedAt: string;
-  stars: number;
+  crystals: number;
 }
 
 

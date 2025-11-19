@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import type { DocumentItem } from '../types/course.types';
+import { useNavigate } from 'react-router-dom';
 
 interface PDFsViewerProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
 }) => {
   const [activeDocumentId, setActiveDocumentId] = useState<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const navigate = useNavigate();
 
   // Reset and set the first document as active when documents change
   React.useEffect(() => {
@@ -79,6 +82,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
               />
             )}
           </button>
+          
         </div>
 
         {/* Document List */}
@@ -136,6 +140,36 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
             </div>
           </div>
         )}
+
+        <button
+          type="button"
+          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          // TODO: onClick
+        >
+          <img
+            src="assets/images/Level_Elements/Bar.png"
+            alt="bar"
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+            Ready For Challenge
+          </div>
+        </button>
+
+        <button
+          type="button"
+          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          // TODO: onClick
+        >
+          <img
+            src="assets/images/Level_Elements/Bar3.png"
+            alt="bar"
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-black text-xl font-semibold">
+            Back
+          </div>
+        </button>
       </div>
 
       {/* Main PDF Viewer Area */}
