@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Headers } from '../components/Header';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 interface GiftItem {
   id: string;
@@ -12,7 +14,7 @@ interface GiftItem {
 
 export const ShopPage: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const giftItems: GiftItem[] = [
     {
       id: 'small-a',
@@ -59,10 +61,10 @@ export const ShopPage: React.FC = () => {
   ];
 
   return (
-    <div className="relative w-full h-screen bg-white overflow-hidden">
+    <div className="relative w-full min-h-screen bg-transparent overflow-auto">
       {/* Header */}
       <Headers />
-      
+
       {/* Background with stars */}
       <div className="absolute left-0 top-[95px] w-full h-[calc(100vh-95px)] bg-[#191A31] overflow-hidden">
         {/* Star decorations */}
@@ -112,12 +114,12 @@ export const ShopPage: React.FC = () => {
               alt="Treasure chest"
               className="w-[125px] h-[96px] mb-8 drop-shadow-[0_4px_4px_rgba(255,255,255,1)]"
             />
-            
+
             {/* Welcome Text */}
             <h1 className="text-[#BEC5D2] text-[35px] font-['Tektur'] font-bold text-center leading-normal mb-6">
               Welcome to Space Station Store !
             </h1>
-            
+
             {/* Description */}
             <p className="text-[#BEC5D2] text-[25px] font-['Tektur'] text-center leading-normal max-w-[526px]">
               Trade your knowledge crystals for awesome rewards! The more you learn, the more you can get!
@@ -125,49 +127,46 @@ export const ShopPage: React.FC = () => {
           </div>
 
           {/* Right Panel - Scrollable Gift Grid */}
-          <div className="flex-1 h-full bg-[rgba(84,58,7,0.56)] rounded-r-[40px] relative">
-            {/* Scrollbar Track */}
-            <div className="absolute right-[24px] top-0 w-[25px] h-full bg-[rgba(0,0,0,0.55)] rounded-[40px]">
-              <div className="absolute top-0 w-full h-[197px] bg-[rgba(217,217,217,0.55)] rounded-[40px]" />
-            </div>
+          <div className="flex-1 h-full bg-[rgba(84,58,7,0.56)] rounded-r-[40px] relative pr-[10px]">
+            <SimpleBar style={{ maxHeight: '100%' }} className="pr-[60px] pl-[20px] py-[47px]">
+              {/* Scrollable Content */}
+              <div className="h-full overflow-y-auto pr-[60px] pl-[40px] py-[47px] scrollable-gifts">
+                <div className="grid grid-cols-3 gap-x-[34px] gap-y-[51px]">
+                  {giftItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex flex-col items-center"
+                    >
+                      {/* Gift Box */}
+                      <div className="w-[280px] h-[300px] bg-[rgba(0,0,0,0.55)] rounded-[40px] flex items-center justify-center mb-4 relative">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="max-w-[152px] max-h-[122px] object-contain"
+                        />
+                      </div>
 
-            {/* Scrollable Content */}
-            <div className="h-full overflow-y-auto pr-[60px] pl-[40px] py-[47px] scrollable-gifts">
-              <div className="grid grid-cols-3 gap-x-[34px] gap-y-[51px]">
-                {giftItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-col items-center"
-                  >
-                    {/* Gift Box */}
-                    <div className="w-[280px] h-[300px] bg-[rgba(0,0,0,0.55)] rounded-[40px] flex items-center justify-center mb-4 relative">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="max-w-[152px] max-h-[122px] object-contain"
-                      />
-                    </div>
-                    
-                    {/* Gift Name */}
-                    <h3 className="text-[#BEC5D2] text-[35px] font-['Tektur'] font-bold text-center mb-2">
-                      {item.name}
-                    </h3>
-                    
-                    {/* Price Button */}
-                    <div className="w-[159px] h-[50px] relative">
-                      <div className="w-full h-full bg-[#FEDEF2] rounded-[10px]" />
-                      <div className="absolute inset-0 flex items-center justify-center gap-1">
-                        <span className="text-[#561A2D] text-[35px] font-['Tiny5'] text-center">
-                          {item.price}
-                        </span>
-                        {/* Crystal Icon */}
-                        <div className="w-[42px] h-[42px] crystal-icon-small" />
+                      {/* Gift Name */}
+                      <h3 className="text-[#BEC5D2] text-[35px] font-['Tektur'] font-bold text-center mb-2">
+                        {item.name}
+                      </h3>
+
+                      {/* Price Button */}
+                      <div className="w-[159px] h-[50px] relative">
+                        <div className="w-full h-full bg-[#FEDEF2] rounded-[10px]" />
+                        <div className="absolute inset-0 flex items-center justify-center gap-1">
+                          <span className="text-[#561A2D] text-[35px] font-['Tiny5'] text-center">
+                            {item.price}
+                          </span>
+                          {/* Crystal Icon */}
+                          <div className="w-[42px] h-[42px] crystal-icon-small" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            </SimpleBar>
           </div>
         </div>
       </div>
@@ -205,6 +204,10 @@ export const ShopPage: React.FC = () => {
         .scrollable-gifts {
           scrollbar-width: none;
           -ms-overflow-style: none;
+        }
+        .simplebar-track.simplebar-vertical {
+          width: 16px;
+          right: 8px;
         }
       `}</style>
     </div>

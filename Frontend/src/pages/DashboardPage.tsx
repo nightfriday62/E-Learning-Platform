@@ -2,60 +2,19 @@ import React from 'react';
 
 import { GameContainer } from '../components';
 import { Headers } from '../components/Header';
-import { ShopIcon } from '../components/ShopIcon';
-import { Link } from 'react-router-dom';
+import { ShopIcons } from '../components/ShopIcon';
 
 export const DashboardPage: React.FC = () => {
 
 
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden pt-6 md:pt-[95px] relative">
-      {/* Navigation */}
-      <nav className="bg-white shadow flex-shrink-0">
-        <header><Headers /> </header>
-        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-[#fab630]">
-                CurioCamp
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/profile"
-                className="bg-[#d9d9d9] hover:bg-[#bfbfbf] text-gray-700  px-2 py-1 rounded-md text-xl"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-md text-xl "
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div> */}
-      </nav>
-
-      {/* Crystal Counter */}
-      <div className="absolute left-[112px] top-[58px] flex items-center gap-2 z-50">
-        <div className="w-[168px] h-[62px] relative">
-          <div className="absolute left-[9px] top-[6px] w-[159px] h-[50px] bg-[#FEDEF2] rounded-[10px]" />
-          <div className="absolute left-[101px] top-[10px] text-[#561A2D] text-[35px] font-['Tiny5'] text-center flex items-center justify-center w-[18px] h-[39px]">
-            2
-          </div>
-          {/* Crystal Icon */}
-          <div className="absolute left-0 top-0 w-[62px] h-[62px] crystal-icon" />
-        </div>
+    <div className="h-screen bg-transparent flex flex-col overflow-hidden pt-6 md:pt-[95px] relative">
+      <Headers /> 
+      <div className="absolute left-0 right-0 top-[110px] md:top-[110px] z-40 pointer-events-auto">
+        <ShopIcons />
       </div>
       
-      <Link to="/shop">
-      <ShopIcon />
-      </Link>
-
-      {/* Main Content */}
 
       <div className="flex-1 w-full h-0 overflow-hidden">
         <GameContainer />
