@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "db:export": "node scripts/exportAllCollections.js",
+    "db:import": "node scripts/importAllCollections.js"
   },
   "keywords": [
     "authentication",
@@ -34,6 +36,9 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/node": "^24.10.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

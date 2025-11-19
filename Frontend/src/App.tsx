@@ -8,6 +8,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CourseProvider } from './contexts/CourseContext';
 import { ProtectedRoute } from './routes';
 import { LoginPage, DashboardPage, ProfilePage } from './pages';
+import QuizPage from './pages/QuizPage';
+import QuizIntro from './pages/QuizIntro';
 
 function App() {
   return (
@@ -33,6 +35,24 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/quiz-intro/:courseId/:moduleId"
+                element={
+                  <ProtectedRoute>
+                    <QuizIntro />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/earn-stars/:courseId/:moduleId"
+                element={
+                  <ProtectedRoute>
+                    <QuizPage />
                   </ProtectedRoute>
                 }
               />

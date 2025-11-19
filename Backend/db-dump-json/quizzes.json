@@ -1,0 +1,63 @@
+[
+  {
+    "_id": "6917fc90e89b3edf921a9e76",
+    "courseId": "6912adcf0cceb3d617e5d0c4",
+    "moduleId": "6912b0480cceb3d617e5d0ca",
+    "questions": [
+      {
+        "text": "What is 2+2?",
+        "options": [
+          {
+            "text": "3",
+            "isCorrect": false,
+            "_id": "6917fc90e89b3edf921a9e78"
+          },
+          {
+            "text": "4",
+            "isCorrect": true,
+            "_id": "6917fc90e89b3edf921a9e79"
+          },
+          {
+            "text": "5",
+            "isCorrect": false,
+            "_id": "6917fc90e89b3edf921a9e7a"
+          }
+        ],
+        "_id": "6917fc90e89b3edf921a9e77",
+        "createdAt": "2025-11-15T04:07:44.319Z",
+        "updatedAt": "2025-11-15T04:07:44.319Z"
+      },
+      {
+        "text": "which is appropriate greeting in the morning?",
+        "options": [
+          {
+            "text": "Good night",
+            "isCorrect": false,
+            "_id": "6917fc90e89b3edf921a9e7c"
+          },
+          {
+            "text": "Good morning",
+            "isCorrect": true,
+            "_id": "6917fc90e89b3edf921a9e7d"
+          },
+          {
+            "text": "Goodbye",
+            "isCorrect": false,
+            "_id": "6917fc90e89b3edf921a9e7e"
+          },
+          {
+            "text": "See you later",
+            "isCorrect": false,
+            "_id": "6917fc90e89b3edf921a9e7f"
+          }
+        ],
+        "_id": "6917fc90e89b3edf921a9e7b",
+        "createdAt": "2025-11-15T04:07:44.319Z",
+        "updatedAt": "2025-11-15T04:07:44.319Z"
+      }
+    ],
+    "createdAt": "2025-11-15T04:07:44.319Z",
+    "updatedAt": "2025-11-15T04:07:44.319Z",
+    "__v": 0
+  }
+]

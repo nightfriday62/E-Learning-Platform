@@ -55,6 +55,7 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({
       );
       const data: { success: boolean; data: EnrollmentCourse[] } =
         await response.json();
+        console.log("Fetched courses:", data);
       if (data.success) {
         setCourses(
           data.data.map((course) => ({
@@ -140,9 +141,10 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({
     if (!course) return [];
 
     const documents: DocumentItem[] = [];
-
+    console.log("Getting documents for course:", courseId, "moduleOrder:", moduleOrder);
     // If moduleOrder is specified, get documents for that specific module
     if (moduleOrder !== undefined) {
+      console.log("what is in course modules:", course.modules);
       const module = course.modules?.find(
         (m: Module) => m.order === moduleOrder
       );

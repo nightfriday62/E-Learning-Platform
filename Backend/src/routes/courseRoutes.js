@@ -1,13 +1,14 @@
 import express from 'express';
 import courseController from '../controllers/courseController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
-import { memoryUpload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
+import { memoryUpload, s3Upload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
-
+router.get('/materials/:materialId/download', courseController.downloadMaterial);
 // Apply authentication middleware to all routes
 router.use(authenticateToken);
 
+router.get('/materials-all', courseController.getAllMaterialsHandler);
 // Course CRUD routes
 router.post('/', courseController.createCourse);
 router.get('/', courseController.getAllCourses);
@@ -21,19 +22,21 @@ router.put('/:courseId/modules', courseController.updateModules);
 // Material management routes
 router.post(
     '/:courseId/materials', 
-    memoryUpload.array('files', 20),
+    s3Upload.array('files', 20),
     handleUploadError,
     courseController.uploadMaterial
 );
 
 router.post(
     '/:courseId/modules/:moduleId/materials', 
-    memoryUpload.array('files', 20),
+    s3Upload.array('files', 20),
     handleUploadError,
     courseController.uploadMaterial
 );
 
 router.get('/materials/:materialId', courseController.getMaterial);
+
+
 router.delete('/materials/:materialId', courseController.deleteMaterial);
 
 // Get presigned URL for direct client uploads
@@ -50,5 +53,5 @@ router.post(
 
 router.get('/:courseId/thumbnail', courseController.getThumbnail);
 router.delete('/:courseId/thumbnail', courseController.deleteThumbnail);
-
+router.get('/:courseId/thumbnail-download', courseController.downloadThumbnail);
 export default router; 
