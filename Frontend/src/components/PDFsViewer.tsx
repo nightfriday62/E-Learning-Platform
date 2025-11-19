@@ -7,18 +7,24 @@ import { useNavigate } from 'react-router-dom';
 interface PDFsViewerProps {
   isOpen: boolean;
   documents: DocumentItem[];
+  viewerData: { courseId: string; moduleId: string };
   onClose: () => void;
 }
 
 const PDFsViewer: React.FC<PDFsViewerProps> = ({
   isOpen,
   documents,
+  viewerData,
   onClose,
 }) => {
   const [activeDocumentId, setActiveDocumentId] = useState<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleStart = () => {
+    navigate(`/earn-stars/${viewerData.courseId}/${viewerData.moduleId}`);
+  };
 
   // Reset and set the first document as active when documents change
   React.useEffect(() => {
@@ -144,7 +150,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
         <button
           type="button"
           className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
-          // TODO: onClick
+          onClick={handleStart}
         >
           <img
             src="assets/images/Level_Elements/Bar.png"
@@ -159,7 +165,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
         <button
           type="button"
           className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
-          // TODO: onClick
+          onClick={onClose} aria-label="Close PDF viewer"
         >
           <img
             src="assets/images/Level_Elements/Bar3.png"
@@ -196,13 +202,13 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
               </>
             )}
           </div>
-          <button onClick={onClose} aria-label="Close PDF viewer">
+          {/* <button onClick={onClose} aria-label="Close PDF viewer">
             <img
               src="/assets/images/PDFViewer/Return-Button.png"
               alt="Return"
               className="w-12"
             />
-          </button>
+          </button> */}
         </div>
 
         {/* PDF Content */}
