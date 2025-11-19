@@ -7,7 +7,7 @@ import {
 import { AuthProvider } from './contexts/AuthContext';
 import { CourseProvider } from './contexts/CourseContext';
 import { ProtectedRoute } from './routes';
-import { LoginPage, DashboardPage, ProfilePage } from './pages';
+import { LoginPage, DashboardPage, ProfilePage, ShopPage } from './pages';
 import QuizPage from './pages/QuizPage';
 import QuizIntro from './pages/QuizIntro';
 
@@ -30,6 +30,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path = "/shop" element={
+                <ProtectedRoute>
+                  <ShopPage />
+                </ProtectedRoute>
+              } />
               <Route
                 path="/profile"
                 element={
