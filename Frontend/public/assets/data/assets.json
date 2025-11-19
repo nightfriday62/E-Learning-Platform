@@ -133,5 +133,31 @@
           "url":"/thumbnail-pixel-art.png"
         }
       ]
+    },
+    {
+      "path":"assets/images/Quiz",
+      "files":[
+        {
+          "type":"image",
+          "key":"quiz-bg",
+          "url":"/quiz-bg.png"
+        },
+        {
+          "type":"image",
+          "key":"quiz-intro-bg",
+          "url":"/quiz-intro-bg.png"
+        },
+        {
+          "type":"image",
+          "key":"btn1",
+          "url":"/btn1.png"
+        },
+        {
+          "type":"image",
+          "key":"btn2",
+          "url":"/btn2.png"
+        }
+      ]
     }
+
 ]
