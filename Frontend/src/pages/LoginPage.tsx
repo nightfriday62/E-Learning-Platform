@@ -92,17 +92,10 @@ export const LoginPage: React.FC = () => {
           </div>
         </form>
 
-        <div className="mt-8">
-          Not a CurioCamp member yet? Visit our Web site to start
+        <div className="mt-8 text-center">
+          Not a StarLeap member yet? <br />Visit our Website to start
         </div>
 
-        <div className="mt-8 flex justify-center">
-          <img
-            src={logoUrl}
-            alt="CurioCamp Logo"
-            className="h-32 w-auto object-contain"
-          />
-        </div>
       </div>
       {/*right side*/}
       <div className="relative  flex-1 lg:block">
