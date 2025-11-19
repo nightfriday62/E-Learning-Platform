@@ -141,7 +141,6 @@ export const Course = (course: CourseProps) => {
                     }
                   }}
                 >
-                  <div className="relative">
                     <img
                       className="w-74 h-96 object-contain"
                       src="assets/images/Level_Elements/Base.png"
@@ -213,7 +212,6 @@ export const Course = (course: CourseProps) => {
                         <div className="text-white text-xs">Loading...</div>
                       </div>
                     )} */}
-                  </div>
 
                   
                 </button>
