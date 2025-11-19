@@ -43,6 +43,14 @@ const moduleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    isOpen: {
+        type: Boolean,
+        default: false
+    },
+    crystals: {
+        type: Number,
+        default: 0
+    },
     materials: [
         {
             materialId: {

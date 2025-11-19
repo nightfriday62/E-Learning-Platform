@@ -81,13 +81,13 @@ export const Course = (course: CourseProps) => {
     <>
       {course.onBack && (
         <button
-          className="absolute top-7 left-7 z-10 inline-flex items-center gap-2 "
+          className="mx-20 absolute top-7 left-7 z-10 inline-flex items-center gap-2 "
           onClick={course.onBack}
         >
           <img
             src="/assets/images/Return-Button.svg"
             alt="Back"
-            className="w-18 h-18"
+            className="w-35 h-18"
           />
         </button>
       )}
@@ -104,15 +104,15 @@ export const Course = (course: CourseProps) => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <div className="flex flex-row items-center py-38 w-max">
+        <div className="mx-9 flex flex-row items-center py-38 w-max">
           {course.modules &&
             course.modules.map((module) => {
-              const isUnlocked = !!module.isOpen;
+              const isUnlocked =  module.isOpen === true;
               if (!isUnlocked) {
                 return (
                   <div
                     key={module._id}
-                    className="relative w-auto h-auto flex-shrink-0 opacity-80"
+                    className="relative w-auto h-auto flex-shrink-0 "
                     aria-disabled="true"
                   >
                     <img
@@ -129,11 +129,7 @@ export const Course = (course: CourseProps) => {
                   key={module._id}
                   className="relative w-auto h-auto flex-shrink-0 flex flex-col items-center space-y-2"
                 >
-                  <button
-                    className="relative"
-                    onClick={() => handleModuleClick(module.order)}
-                    disabled={isLoadingDocuments}
-                  >
+                  <div className="relative">
                     <img
                       className="w-74 h-96 object-contain"
                       src="assets/images/Level_Elements/Base.png"
@@ -143,53 +139,70 @@ export const Course = (course: CourseProps) => {
                       {[...String(module.order)].map((digit, i) => (
                         <img
                           key={i}
-                          className="w-10 h-auto object-contain"
+                          className="w-20 h-auto object-contain pt-5"
                           src={`assets/images/Level_Elements/${digit}.png`}
                           alt={`Digit ${digit}`}
                         />
                       ))}
                     </div>
-                    {module.stars > 0 && (
+                    {module.crystals > 0 && (
                       <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1">
-                        {Array.from({ length: Math.min(3, module.stars) }).map(
+                        {Array.from({ length: Math.min(3, module.crystals) }).map(
                           (_, i) => (
                             <img
                               key={i}
-                              src="assets/images/Level_Elements/Star.png"
-                              alt="Star"
-                              className="w-8 h-auto object-contain"
+                              src="assets/images/Level_Elements/Crystal.png"
+                              alt="Crystal"
+                              className="w-10 h-auto object-contain"
                             />
                           )
                         )}
                       </div>
                     )}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7">
+
+                    <button
+                      onClick={() => handleModuleClick(module.order)}
+                      disabled={isLoadingDocuments}
+                      className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7"
+                    >
                       <img
                         src="assets/images/Level_Elements/Bar.png"
                         alt="bar"
                         className="w-full h-full"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center text-white text-2xl font-semibold">
-                        {module.stars === 0 ? 'In progress' : 'completed'}
+                      <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+                        Start
                       </div>
-                    </div>
+                    </button>
+
+                    
+
                     {isLoadingDocuments && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                         <div className="text-white text-xs">Loading...</div>
                       </div>
                     )}
-                  </button>
+                  </div>
 
                   <button
-                    type="button"
-                    className="px-3 py-1 bg-red-500 text-white rounded text-sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/quiz-intro/${course._id}/${module._id}`);
-                    }}
-                  >
-                    Earn Stars
+                      type="button"
+                      className="relative w-32 h-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/quiz-intro/${course._id}/${module._id}`);
+                      }}
+                    >
+                      <img
+                        src="assets/images/Level_Elements/Bar2.png"
+                        alt="bar"
+                        className="w-full h-full"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+                        Try Again
+                      </div>
                   </button>
+
+                  
                 </div>
               );
             })}
