@@ -12,7 +12,7 @@ export const GameContainer = () => {
   const [openedCourse, setOpenedCourse] = useState<CourseData | null>(null);
   const location = useLocation();
 
-  const bgUrl = '/assets/images/Login-Background.png';
+  const bgUrl = '/assets/images/dashboard-bg.png';
 
   const handleCourseClick = (course: CourseData) => {
     console.log(course);
@@ -56,6 +56,11 @@ export const GameContainer = () => {
       className="game-container relative w-full h-full bg-center"
       style={{
         backgroundImage: `url(${bgUrl})`,
+        width: '100vw',
+        height: '100vh',
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }}
     >
       <div className="absolute inset-0 flex justify-center items-center gap-4 p-4">

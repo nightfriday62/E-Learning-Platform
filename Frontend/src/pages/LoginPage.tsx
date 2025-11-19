@@ -13,7 +13,6 @@ export const LoginPage: React.FC = () => {
 
   const to = '/dashboard';
   const imageUrl = '/assets/images/Login-Background.png';
-  const logoUrl = '/assets/images/Login-Logo.svg';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
