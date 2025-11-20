@@ -11,6 +11,10 @@ const questionSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    imageUri: {
+        type: String,
+        trim: true
+    },
     options: [
         {
             text: {

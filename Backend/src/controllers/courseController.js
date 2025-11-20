@@ -3,13 +3,14 @@ import s3Service from '../services/s3Service.js';
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
+import { Quiz } from '../models/quiz.js';
 
 // helper: convert a stored relative URL (e.g. "/uploads/...") to an absolute URL using the incoming request
 const toFullUrl = (req, relativePath) => {
-  if (!relativePath) return null;
-  if (/^https?:\/\//i.test(relativePath)) return relativePath; // already absolute
-  const proto = req.headers['x-forwarded-proto'] || req.protocol;
-  return `${proto}://${req.get('host')}${relativePath}`;
+    if (!relativePath) return null;
+    if (/^https?:\/\//i.test(relativePath)) return relativePath; // already absolute
+    const proto = req.headers['x-forwarded-proto'] || req.protocol;
+    return `${proto}://${req.get('host')}${relativePath}`;
 };
 
 // Helper function to determine file type
@@ -21,7 +22,7 @@ const getFileType = (mimeType) => {
 };
 
 class CourseController {
-    
+
     /**
      * Create a new course
      */
@@ -53,18 +54,18 @@ class CourseController {
 
                 // progress docs
                 const progressBulk = [];
-                for(const s of students){
-                    for(const m of course.modules){
+                for (const s of students) {
+                    for (const m of course.modules) {
                         progressBulk.push({
-                            updateOne:{
-                                filter:{userId:s._id,moduleId:m._id},
-                                update:{userId:s._id,courseId:course._id,moduleId:m._id,stars:0},
-                                upsert:true
+                            updateOne: {
+                                filter: { userId: s._id, moduleId: m._id },
+                                update: { userId: s._id, courseId: course._id, moduleId: m._id, stars: 0 },
+                                upsert: true
                             }
                         });
                     }
                 }
-                if(progressBulk.length){
+                if (progressBulk.length) {
                     await Progress.bulkWrite(progressBulk);
                 }
             }
@@ -478,19 +479,19 @@ class CourseController {
 
             for (const course of courses) {
                 let courseModified = false;
-                
+
                 for (const module of course.modules) {
                     const initialLength = module.materials.length;
                     module.materials = module.materials.filter(
                         material => material.materialId.toString() !== materialId
                     );
-                    
+
                     if (module.materials.length !== initialLength) {
                         courseModified = true;
                         removedFromModules += (initialLength - module.materials.length);
                     }
                 }
-                
+
                 if (courseModified) {
                     await course.save();
                     updatedCourses.push(course._id);
@@ -588,7 +589,7 @@ class CourseController {
                 if (materialsToDelete.length > 0) {
                     // Get material details for S3 deletion
                     const materials = await Material.find({ _id: { $in: materialsToDelete } });
-                    
+
                     // Delete from storage (S3 or local)
                     for (const material of materials) {
                         try {
@@ -759,6 +760,49 @@ class CourseController {
         }
     }
 
+    async uploadQuizQuestionImage(req, res) {
+        try {
+            const file = req.file; // Single file for quiz question image
+            const { quizId, questionId } = req.params;
+            const quiz = await Quiz.findById(quizId);
+            if (!quiz) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Quiz not found'
+                });
+            }
+            const question = quiz.questions.id(questionId);
+            if (!question) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Question not found'
+                });
+            }
+            if (!file) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No image file uploaded'
+                });
+            }
+            const relativePath = req.savedFilePath ? req.savedFilePath : (file.path ? path.relative(process.cwd(), file.path) : null);
+            const urlPath = relativePath ? `/${relativePath.replace(/\\/g, '/')}` : null;
+            question.imageUri = urlPath;
+
+            await quiz.save();
+            res.json({
+                success: true,
+                message: 'Question image uploaded successfully',
+            });
+        } catch (error) {
+            console.error('Upload Quiz Question Image Error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to upload quiz question image',
+                error: error.message
+            });
+        }
+    }
+
     /**
      * Delete course thumbnail
      */
@@ -908,6 +952,8 @@ class CourseController {
             res.status(500).json({ success: false, message: 'Failed to download thumbnail', error: error.message });
         }
     }
+
+
     async getAllMaterialsHandler(req, res) {
         try {
             const materials = await Material.find().lean();

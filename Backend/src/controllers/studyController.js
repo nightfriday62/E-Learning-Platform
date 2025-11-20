@@ -2,6 +2,8 @@ import { Enrollment, User } from "../models/index.js";
 import { Course } from "../models/course.js";
 import Progress from "../models/progress.js";
 import { Quiz } from "../models/quiz.js";
+import fs from 'fs';
+import path from 'path';
 
 class studyController {
 	async getCourses(req, res) {
@@ -71,6 +73,49 @@ class studyController {
       console.error('Get Quiz Error:', error);
       res.status(500).json({ success: false, message: 'Failed to get quiz', error: error.message });
     }
+  }
+  async downloadQuizQuestionImage(req, res) {
+          try {
+              const { quizId, questionId } = req.params;
+              const quiz = await Quiz.findById(quizId);
+              if (!quiz) {
+                  return res.status(404).json({
+                      success: false,
+                      message: 'Quiz not found'
+                  });
+              }
+              const question = quiz.questions.id(questionId);
+              if (!question) {
+                  return res.status(404).json({
+                      success: false,
+                      message: 'Question not found'
+                  });
+              }
+              console.log('Question image URI:', question.imageUri);
+              if (!question.imageUri) {
+                  return res.status(404).json({
+                      success: false,
+                      message: 'No image found for this question'
+                  });
+              }
+              const filePath = path.join(process.cwd(), question.imageUri.replace(/^\//, ''));
+              if (!fs.existsSync(filePath)) {
+                  return res.status(404).json({ success: false, message: 'Question image file not found on server' });
+              }
+              const filename = path.basename(filePath);
+              return res.download(filePath, filename, (err) => {
+                  if (err) {
+                      console.error('Error sending question image file:', err);
+                      if (!res.headersSent) {
+                          res.status(500).json({ success: false, message: 'Failed to send question image' });
+                      }
+                  }
+              });
+          }
+          catch (error) {
+              console.error('Download Quiz Question Image Error:', error);
+              res.status(500).json({ success: false, message: 'Failed to download question image', error: error.message });
+          }
   }
 }
 

@@ -122,6 +122,38 @@ const thumbnailUpload = multer({
     }
 });
 
+const quizImageFilter = (req, file, cb) => {
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Quiz image must be a PNG, JPEG, JPG, or GIF image'), false);
+    }
+};
+
+const quizImageStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const dest = path.join(BASE_UPLOADS_DIR, 'quiz-images');
+        fs.mkdirSync(dest, { recursive: true });
+        cb(null, dest);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname) || '';
+        const filename = `${uuidv4()}${ext}`;
+        // expose saved path for controllers
+        req.savedFilePath = path.join('uploads', 'quiz-images', filename);
+        cb(null, filename);
+    }
+});
+const quizImageUpload = multer({
+    storage: quizImageStorage,
+    fileFilter: quizImageFilter,
+    limits: {
+        fileSize: FILE_SIZE_LIMITS.default,
+        files: 1
+    }
+});
+
 // Error handling middleware for multer
 const handleUploadError = (error, req, res, next) => {
     if (error instanceof multer.MulterError) {
@@ -167,6 +199,7 @@ export {
     s3Upload,
     memoryUpload,
     thumbnailUpload,
+    quizImageUpload,
     handleUploadError,
     ALLOWED_FILE_TYPES,
     FILE_SIZE_LIMITS
