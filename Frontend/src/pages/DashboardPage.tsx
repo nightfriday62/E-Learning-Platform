@@ -3,10 +3,19 @@ import React from 'react';
 import { GameContainer } from '../components';
 import { Headers } from '../components/Header';
 import { ShopIcons } from '../components/ShopIcon';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export const DashboardPage: React.FC = () => {
 
-
+  const { logout } = useAuth();
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
@@ -36,6 +45,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </nav>
+      <ShopIcons />
 
       {/* Main Content */}
 
