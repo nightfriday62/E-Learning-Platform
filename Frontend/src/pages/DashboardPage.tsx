@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { GameContainer } from '../components';
-import { Headers } from '../components/Header';
 import { ShopIcons } from '../components/ShopIcon';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
