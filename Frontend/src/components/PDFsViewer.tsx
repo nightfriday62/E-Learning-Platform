@@ -149,7 +149,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
 
         <button
           type="button"
-          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          className="relative w-80 h-auto p-4 justify-center items-center opacity-100 transition-opacity cursor-pointer "
           onClick={handleStart}
         >
           <img
@@ -164,7 +164,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
 
         <button
           type="button"
-          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer opacity-60 hover:opacity-100 transition-opacity"
           onClick={onClose} aria-label="Close PDF viewer"
         >
           <img

@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import type { CourseData, DocumentItem } from '../types/course.types';
 import { useCourses } from '../contexts/CourseContext';
 import PDFsViewer from './PDFsViewer';
-import { useNavigate } from 'react-router-dom';
 
 type CourseProps = CourseData & { onBack?: () => void };
 
@@ -11,7 +10,6 @@ export const Course = (course: CourseProps) => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
   const { getDocumentItemsFromCourse, getMaterialSecureUrl } = useCourses();
-  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
@@ -84,7 +82,7 @@ export const Course = (course: CourseProps) => {
     <>
       {course.onBack && (
         <button
-          className="mx-20 absolute top-7 left-7 z-10 inline-flex items-center gap-2 "
+          className="mx-20 absolute top-10 left-7 z-10 inline-flex items-center hover:scale-110 transition-opacity cursor-pointer"
           onClick={course.onBack}
         >
           <img
@@ -107,7 +105,7 @@ export const Course = (course: CourseProps) => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <div className="mx-9 flex flex-row items-center py-38 w-max">
+        <div className="mx-9 flex flex-row items-center py-30 w-max ">
           {course.modules &&
             course.modules.map((module) => {
               const isUnlocked =  module.isModuleOpen === true;
@@ -130,15 +128,10 @@ export const Course = (course: CourseProps) => {
               return (
                 <button
                   key={module._id}
-                  className="relative w-auto h-auto flex-shrink-0 flex flex-col items-center space-y-2 cursor-pointer group"
+                  className="relative w-auto h-auto flex-shrink-0 flex flex-col items-center space-y-2 cursor-pointer group hover:scale-105"
                   disabled={isLoadingDocuments}
-                  onClick={(e) => {
-                    e.stopPropagation(); // optional: prevent parent click
-                    if (module.crystals === 0) {
-                      handleModuleClick(module.order, module._id);
-                    } else {
-                      navigate(`/quiz-intro/${course._id}/${module._id}`);
-                    }
+                  onClick={() => {
+                    handleModuleClick(module.order, module._id);
                   }}
                 >
                     <div
@@ -185,7 +178,6 @@ export const Course = (course: CourseProps) => {
                     {module.crystals === 0 ? (
                       // START button
                       <div
-                        
                         className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7 z-10"
                       >
                         <img
@@ -201,10 +193,6 @@ export const Course = (course: CourseProps) => {
                       // TRY AGAIN button
                       <div
                         className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7 z-10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/quiz-intro/${course._id}/${module._id}`);
-                        }}
                       >
                         <img
                           src="assets/images/Level_Elements/Bar2.png"

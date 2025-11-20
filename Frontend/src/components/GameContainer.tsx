@@ -12,7 +12,7 @@ export const GameContainer = () => {
   const [openedCourse, setOpenedCourse] = useState<CourseData | null>(null);
   const location = useLocation();
 
-  const bgUrl = '/assets/images/menu-bg.png';
+  
 
   const handleCourseClick = (course: CourseData) => {
     console.log(course);
@@ -54,15 +54,8 @@ export const GameContainer = () => {
   return (
     <div
       className="game-container relative w-full h-full bg-center"
-      style={{
-        backgroundImage: `url(${bgUrl})`,
-        width: '100vw',
-        height: '100vh',
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
     >
+      
       <div className="absolute inset-0 flex justify-center items-center gap-4 p-4">
         {openedCourse ? (
           <Course {...openedCourse} onBack={() => setOpenedCourse(null)} />
@@ -72,7 +65,7 @@ export const GameContainer = () => {
             <img
               key={course._id}
               src={course.thumbnail}
-              className="w-64 h-48 object-cover rounded-xl cursor-pointer transition duration-300 hover:ring-8 hover:ring-[#827a7a71]"
+              className="w-64 h-48 object-cover rounded-xl cursor-pointer transition duration-300 hover:ring-8 hover:ring-[#827a7a71] hover:scale-110"
               alt={`Course thumbnail for ${course.title}`}
               onClick={() => handleCourseClick(course)}
             />

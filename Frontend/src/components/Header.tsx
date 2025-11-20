@@ -1,10 +1,8 @@
 
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-
+import { Link } from 'react-router-dom';
 
 export function Headers() {
-  const navigate = useNavigate();
   const { logout } = useAuth();
   const handleLogout = async () => {
     try {
@@ -15,22 +13,31 @@ export function Headers() {
   };
 
   return (
-    <div className="fixed inset-x-0 top-0 w-full h-[95px] bg-[#BEC5D2] flex items-center justify-between px-8 z-50">
-      <div className="text-[#0F1437] text-[58px] font-['Tiny5'] ml-12">StarLeap</div>
-      <div className="flex gap-4">
-        <button
-          onClick={() => navigate('/profile')}
-          className="profile-button w-[160px] h-[50px] bg-[#D9D9D9] rounded-[10px] text-[#1E1E1E] text-[32px] font-['Tiny5'] flex items-center justify-center cursor-pointer hover:opacity-90"
-        >
-          PROFILE
-        </button>
-        <button
-          onClick={handleLogout}
-          className="logout-button w-[160px] h-[50px] bg-[#A93511] rounded-[10px] text-white text-[32px] font-['Tiny5'] flex items-center justify-center cursor-pointer hover:opacity-90"
-        >
-          LOG OUT
-        </button>
+    <div className='bg-gray-50'>
+      <div className="max-w-7xl mx-20 px-4 sm:px-6 lg:px-8 ">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/" className="text-2xl font-bold text-[#fab630]">
+              StarLeap
+            </Link>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link
+              to="/profile"
+              className="border-gray-700 text-gray-700 border-2 hover:bg-gray-700 hover:text-white px-3 py-1.5 rounded-md text-sm"
+            >
+              Profile
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="border-[#A93511] border-2 text-[#A93511]  hover:bg-[#A93511] hover:text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+    
   )
 }

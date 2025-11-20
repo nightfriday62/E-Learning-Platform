@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Headers } from '../components/Header';
-import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import { ShopIcons } from '../components/ShopIcon';
 
 interface GiftItem {
   id: string;
@@ -14,202 +14,107 @@ interface GiftItem {
 
 export const ShopPage: React.FC = () => {
   const navigate = useNavigate();
+  const bgUrl = '/assets/images/Quiz/quiz-bg.png';
 
   const giftItems: GiftItem[] = [
     {
       id: 'small-a',
       name: 'Small Gift A',
       price: 4,
-      image: '/assets/images/PrizeIcon/gift-box-1.svg',
-      size: 'small'
+      image: '/assets/images/PrizeIcon/secret-box1.png',
+      size: 'small',
     },
     {
       id: 'small-b',
       name: 'Small Gift B',
       price: 5,
-      image: '/assets/images/PrizeIcon/pencils.svg',
-      size: 'small'
+      image: '/assets/images/PrizeIcon/pencils.png',
+      size: 'small',
     },
     {
       id: 'small-c',
       name: 'Small Gift C',
       price: 4,
-      image: '/assets/images/PrizeIcon/cloud.svg',
-      size: 'small'
+      image: '/assets/images/PrizeIcon/stickers.png',
+      size: 'small',
     },
     {
       id: 'large-a',
       name: 'Large Gift A',
       price: 15,
-      image: '/assets/images/PrizeIcon/gift-box-2.svg',
-      size: 'large'
+      image: '/assets/images/PrizeIcon/secret-box2.png',
+      size: 'large',
     },
     {
       id: 'large-b',
       name: 'Large Gift B',
       price: 25,
-      image: '/assets/images/PrizeIcon/camera.svg',
-      size: 'large'
+      image: '/assets/images/PrizeIcon/camera.png',
+      size: 'large',
     },
     {
       id: 'large-c',
       name: 'Large Gift C',
       price: 30,
-      image: '/assets/images/PrizeIcon/game-controller.svg',
-      size: 'large'
-    }
+      image: '/assets/images/PrizeIcon/game-controller.png',
+      size: 'large',
+    },
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-transparent overflow-auto">
-      {/* Header */}
+    <div
+      className="h-screen  flex flex-col overflow-hidden"
+      style={{
+        backgroundImage: `url(${bgUrl})`,
+        width: '100vw',
+        height: '100vh',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}>
+      {/* Navigation */}
       <Headers />
+      <ShopIcons />
 
-      {/* Background with stars */}
-      <div className="absolute left-0 top-[95px] w-full h-[calc(100vh-95px)] bg-[#191A31] overflow-hidden">
-        {/* Star decorations */}
-        <div className="stars-container absolute inset-0">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={i}
-              className="star"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`
-              }}
-            />
-          ))}
-        </div>
+      {/* Main Content */}
+      <div className="flex w-2/3 h-auto rounded-xl overflow-hidden justify-center mx-auto my-auto">
+        <div className="basis-1/3 bg-[#7E5D1A] flex flex-col gap-6 items-center justify-center py-20 px-7">
+          <img src="assets/images/Shop/shopBox.png" alt="shop box icon" className="w-30" />
 
-        {/* Crystal Counter */}
-        <div className="absolute left-[112px] top-[58px] flex items-center gap-2">
-          <div className="w-[168px] h-[62px] relative">
-            <div className="absolute left-[9px] top-[6px] w-[159px] h-[50px] bg-[#FEDEF2] rounded-[10px]" />
-            <div className="absolute left-[101px] top-[10px] text-[#561A2D] text-[35px] font-['Tiny5'] text-center flex items-center justify-center w-[18px] h-[39px]">
-              2
-            </div>
-            {/* Crystal Icon */}
-            <div className="absolute left-0 top-0 w-[62px] h-[62px] crystal-icon" />
+          <div className="text-white text-xl font-bold text-center">
+            Welcome to Space Station Store !
+          </div>
+
+          <div className="text-white text-md text-center">
+            Trade your knowledge crystals for awesome rewards! The more you learn, the more you can
+            get!
           </div>
         </div>
 
-        {/* Back Button */}
-        <div className="absolute right-[72px] top-[66px]">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-[159px] h-[50px] bg-[#BEC5D2] rounded-[10px] text-[#1E1E1E] text-[35px] font-['Tiny5'] text-center hover:opacity-90 transition-opacity"
-          >
-            BACK
-          </button>
-        </div>
-
-        {/* Main Container */}
-        <div className="absolute left-[100px] top-[153px] w-[1729px] h-[746px] flex">
-          {/* Left Panel - Welcome Section */}
-          <div className="w-[528px] h-full bg-[#7E5D1A] rounded-l-[40px] flex flex-col items-center justify-center px-8 relative">
-            {/* Treasure Chest Image */}
-            <img
-              src="/assets/images/PrizeIcon/treasure-chest.svg"
-              alt="Treasure chest"
-              className="w-[125px] h-[96px] mb-8 drop-shadow-[0_4px_4px_rgba(255,255,255,1)]"
-            />
-
-            {/* Welcome Text */}
-            <h1 className="text-[#BEC5D2] text-[35px] font-['Tektur'] font-bold text-center leading-normal mb-6">
-              Welcome to Space Station Store !
-            </h1>
-
-            {/* Description */}
-            <p className="text-[#BEC5D2] text-[25px] font-['Tektur'] text-center leading-normal max-w-[526px]">
-              Trade your knowledge crystals for awesome rewards! The more you learn, the more you can get!
-            </p>
-          </div>
-
-          {/* Right Panel - Scrollable Gift Grid */}
-          <div className="flex-1 h-full bg-[rgba(84,58,7,0.56)] rounded-r-[40px] relative pr-[10px]">
-            <SimpleBar style={{ maxHeight: '100%' }} className="pr-[60px] pl-[20px] py-[47px]">
-              {/* Scrollable Content */}
-              <div className="h-full overflow-y-auto pr-[60px] pl-[40px] py-[47px] scrollable-gifts">
-                <div className="grid grid-cols-3 gap-x-[34px] gap-y-[51px]">
-                  {giftItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex flex-col items-center"
-                    >
-                      {/* Gift Box */}
-                      <div className="w-[280px] h-[300px] bg-[rgba(0,0,0,0.55)] rounded-[40px] flex items-center justify-center mb-4 relative">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="max-w-[152px] max-h-[122px] object-contain"
-                        />
-                      </div>
-
-                      {/* Gift Name */}
-                      <h3 className="text-[#BEC5D2] text-[35px] font-['Tektur'] font-bold text-center mb-2">
-                        {item.name}
-                      </h3>
-
-                      {/* Price Button */}
-                      <div className="w-[159px] h-[50px] relative">
-                        <div className="w-full h-full bg-[#FEDEF2] rounded-[10px]" />
-                        <div className="absolute inset-0 flex items-center justify-center gap-1">
-                          <span className="text-[#561A2D] text-[35px] font-['Tiny5'] text-center">
-                            {item.price}
-                          </span>
-                          {/* Crystal Icon */}
-                          <div className="w-[42px] h-[42px] crystal-icon-small" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+        <div className="basis-2/3 bg-[#543a0770] flex items-center justify-center p-7">
+          {/* <SimpleBar style={{ maxHeight: 800 }} className="pr-[60px] pl-[20px] py-[47px] w-full h-full"> */}
+          {/* Scrollable Content */}
+          <div className="h-[90%] w-full px-8 overflow-y-auto">
+            <div className="grid grid-cols-3 gap-6">
+              {giftItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col w-full h-full bg-[rgba(0,0,0,0.55)] rounded-xl items-center justify-center p-4 relative gap-4">
+                  {/*  Item bg Box */}
+                  <img src={item.image} alt={item.name} className="w-20 h-20 object-contain" />
+                  {/* Item Name */}
+                  <h3 className="text-[#BEC5D2] text-xl font-bold text-center">{item.name}</h3>
+                  {/* Price Button */}
+                  <div className="flex flex-row gap-2  justify-center items-center px-2 py-1 w-20 bg-[#FEDEF2] rounded-sm">
+                    <span className="text-[#561A2D] text-lg font-bold ">{item.price}</span>
+                    <img src="/assets/images/PrizeIcon/crystal-sm.png" className="w-7 h-7" />
+                  </div>
                 </div>
-              </div>
-            </SimpleBar>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-
-      <style>{`
-        .stars-container .star {
-          position: absolute;
-          width: 13px;
-          height: 12px;
-          background: #CA8E28;
-          animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-
-        .crystal-icon {
-          background: url("data:image/svg+xml,%3Csvg width='62' height='62' viewBox='0 0 62 62' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M27 0H34V3H31V3H27V0Z' fill='%23874A5E'/%3E%3Cpath d='M19 0H27V3H24V3H21V5H19V7H17V10H14V14H10V17H7V21H3V24H3V27H0V34H3V37H5V38H7V41H10V45H14V48H17V51H21V55H24V58H27V58H34V55H38V51H41V48H45V45H48V41H51V38H55V34H58V27H58V24H55V21H51V17H48V14H45V10H41V7H38V5H34V3H34V0H27Z' fill='%23FF79AD'/%3E%3C/svg%3E") no-repeat center;
-          background-size: contain;
-          filter: drop-shadow(0 4px 4px #FFF);
-        }
-
-        .crystal-icon-small {
-          background: url("data:image/svg+xml,%3Csvg width='42' height='42' viewBox='0 0 42 42' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 0H23V2H19V0Z' fill='%23874A5E'/%3E%3Cpath d='M19 2H23V5H21V5H19V2Z' fill='%23FFFEFF'/%3E%3Cpath d='M16 5H19V7H14V9H12V12H9V14H7V16H7V19H5V21H2V23H5V26H7V28H9V30H12V33H14V35H16V37H19V40H23V37H26V35H28V33H30V30H33V28H35V26H37V23H40V19H40V16H37V14H35V12H33V9H30V7H28V5H23V2H23V0H19V2H16V5Z' fill='%23FF79AD'/%3E%3C/svg%3E") no-repeat center;
-          background-size: contain;
-          filter: drop-shadow(0 4px 4px #FFF);
-        }
-
-        .a::-webkit-scrollbar {
-          width: 0;
-        }
-
-        .scrollable-gifts {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .simplebar-track.simplebar-vertical {
-          width: 16px;
-          right: 8px;
-        }
-      `}</style>
     </div>
   );
 };
