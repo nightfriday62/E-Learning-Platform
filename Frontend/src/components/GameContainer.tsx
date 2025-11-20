@@ -12,7 +12,7 @@ export const GameContainer = () => {
   const [openedCourse, setOpenedCourse] = useState<CourseData | null>(null);
   const location = useLocation();
 
-  const bgUrl = '/assets/images/dashboard-bg.png';
+  const bgUrl = '/assets/images/menu-bg.png';
 
   const handleCourseClick = (course: CourseData) => {
     console.log(course);
