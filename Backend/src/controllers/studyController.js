@@ -72,6 +72,23 @@ class studyController {
       res.status(500).json({ success: false, message: 'Failed to get quiz', error: error.message });
     }
   }
+  async getQuestionImage(req, res) {
+    try {
+      const { quizId, questionId } = req.params;
+      const quiz = await Quiz.findById(quizId);
+      if (!quiz) {
+        return res.status(404).json({ success: false, message: 'Quiz not found' });
+      }
+      const question = quiz.questions.id(questionId);
+      if (!question || !question.imageUri) {
+        return res.status(404).json({ success: false, message: 'Question image not found' });
+      }
+      res.redirect(question.imageUri);
+    } catch (error) {
+      console.error('Get Question Image Error:', error);
+      res.status(500).json({ success: false, message: 'Failed to get question image', error: error.message });
+    }
+  }
 }
 
 export default new studyController();

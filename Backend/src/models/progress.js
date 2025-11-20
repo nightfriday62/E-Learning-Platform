@@ -15,13 +15,14 @@ const progressSchema = new mongoose.Schema({
     },
     moduleId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'Module',
         required: true
     },
   // Grade represented by number of stars (0-5)
     stars: {
         type: Number,
         min: 0,
-        max: 5,
+        max: 3,
         default: 0
     },
     // If true, module is open/accessible for the student. If false, it's locked.

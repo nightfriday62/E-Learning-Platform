@@ -1,10 +1,15 @@
 import express from 'express';
 import courseController from '../controllers/courseController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
-import { memoryUpload, s3Upload, handleUploadError, thumbnailUpload } from '../middleware/uploadMiddleware.js';
+import { memoryUpload, s3Upload, handleUploadError, thumbnailUpload, quizImageUpload } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 router.get('/materials/:materialId/download', courseController.downloadMaterial);
+router.put(
+    '/quiz/:quizId/:questionId', 
+    quizImageUpload.single('image'),
+    handleUploadError,
+    courseController.uploadQuizQuestionImage);
 // Apply authentication middleware to all routes
 router.use(authenticateToken);
 
