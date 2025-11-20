@@ -130,7 +130,7 @@ export const Course = (course: CourseProps) => {
               return (
                 <button
                   key={module._id}
-                  className="relative w-auto h-auto flex-shrink-0 flex flex-col items-center space-y-2 cursor-pointer"
+                  className="relative w-auto h-auto flex-shrink-0 flex flex-col items-center space-y-2 cursor-pointer group"
                   disabled={isLoadingDocuments}
                   onClick={(e) => {
                     e.stopPropagation(); // optional: prevent parent click
@@ -141,12 +141,22 @@ export const Course = (course: CourseProps) => {
                     }
                   }}
                 >
+                    <div
+                      className="absolute -top-2 -left-1 w-[calc(100%+0.5rem)] h-[calc(100%+0.5rem)] inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-30 pointer-events-none justify-center items-center"
+                      style={{
+                        backgroundImage: 'url(assets/images/Level_Elements/Base-bg.png)',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'contain',
+                      }}
+                    ></div>
                     <img
-                      className="w-74 h-96 object-contain"
+                      className="w-74 h-96 object-contain z-10 items-center"
                       src="assets/images/Level_Elements/Base.png"
                       alt="Module button"
+
                     />
-                    <div className="absolute top-35 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-1">
+                    <div className="absolute top-35 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-1 z-10">
                       {[...String(module.order)].map((digit, i) => (
                         <img
                           key={i}
@@ -157,7 +167,7 @@ export const Course = (course: CourseProps) => {
                       ))}
                     </div>
                     
-                    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1 z-10">
                       {Array.from({ length: 3 }).map((_, i) => (
                         <img
                           key={i}
@@ -176,7 +186,7 @@ export const Course = (course: CourseProps) => {
                       // START button
                       <div
                         
-                        className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7"
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7 z-10"
                       >
                         <img
                           src="assets/images/Level_Elements/Bar.png"
@@ -190,7 +200,7 @@ export const Course = (course: CourseProps) => {
                     ) : (
                       // TRY AGAIN button
                       <div
-                        className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7"
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-7 z-10"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/quiz-intro/${course._id}/${module._id}`);
