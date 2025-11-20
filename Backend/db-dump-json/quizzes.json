@@ -25,7 +25,8 @@
         ],
         "_id": "6917fc90e89b3edf921a9e77",
         "createdAt": "2025-11-15T04:07:44.319Z",
-        "updatedAt": "2025-11-15T04:07:44.319Z"
+        "updatedAt": "2025-11-20T07:40:06.726Z",
+        "imageUri": "/uploads/quiz-images/66240a06-e951-4949-b744-c89f6f435260.png"
       },
       {
         "text": "which is appropriate greeting in the morning?",
@@ -57,7 +58,7 @@
       }
     ],
     "createdAt": "2025-11-15T04:07:44.319Z",
-    "updatedAt": "2025-11-15T04:07:44.319Z",
+    "updatedAt": "2025-11-20T07:40:06.726Z",
     "__v": 0
   }
 ]
