@@ -5,6 +5,7 @@ import type { QuizQuestion } from '../types/quizQuestion.types';
 import { Rocket } from '../components/Rocket';
 import { QuizEnd } from '../components/QuizEnd';
 import { Headers } from '../components/Header';
+import { useAuth } from '../contexts/AuthContext';
 
 const QuizPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const QuizPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
+  const { user } = useAuth();
 
   const fetchQuiz = useCallback(async () => {
     if (!courseId || !moduleId) return;
@@ -96,7 +98,7 @@ const QuizPage: React.FC = () => {
 
       const payload = { answers, score: correctCount };
 
-      const res = await makeAuthenticatedRequest(`/api/study/quiz/${quiz._id}/attempt`, {
+      const res = await makeAuthenticatedRequest(`/api/study/user/${user?._id}/quiz/${quiz._id}/attempt`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -22,8 +22,8 @@ export const QuizEnd: React.FC<QuizEndProps> = ({ score, onNewChapter }) => {
         <div className="congratulations-title">Congratulation!</div>
         
         <div className="score-container">
-          <div className="score-text">You have earned </div>
-          <div className="score-number">{score}</div>
+          <div className="score-text">You've earned</div>
+          <div className="score-number">3 </div>
           <div className="star-icon">
             <svg width="53" height="52" viewBox="0 0 53 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{filter: 'drop-shadow(0 4px 4px #FFF)'}}>
               <rect x="9" y="23" width="15" height="3" transform="rotate(90 9 23)" fill="#FF79AD"/>

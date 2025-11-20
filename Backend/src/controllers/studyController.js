@@ -2,6 +2,8 @@ import { Enrollment, User } from "../models/index.js";
 import { Course } from "../models/course.js";
 import Progress from "../models/progress.js";
 import { Quiz } from "../models/quiz.js";
+import CrystalInfo from "../models/crystalInfo.js";
+
 import fs from 'fs';
 import path from 'path';
 
@@ -117,6 +119,44 @@ class studyController {
               res.status(500).json({ success: false, message: 'Failed to download question image', error: error.message });
           }
   }
+  async submitQuiz(req, res) {
+    try {
+      const { userId, quizId } = req.params;
+
+      const quiz = await Quiz.findById(quizId);
+      if (!quiz) {
+        return res.status(404).json({ success: false, message: 'Quiz not found' });
+      }
+      const moduleId = quiz.moduleId;
+      const userCrystalData = await CrystalInfo.findOne({ userId });
+      if (!userCrystalData) {
+        const newRecord = { userId, crystal: 3, moduleCompleted: [moduleId] };
+        await CrystalInfo.create(newRecord);
+      } else {
+        if (!userCrystalData.moduleCompleted.includes(moduleId)) {
+          userCrystalData.crystal += 3;
+          userCrystalData.moduleCompleted.push(moduleId);
+          await userCrystalData.save();
+        } 
+      }
+      res.json({ success: true, message: 'Quiz submitted successfully' });
+    } catch (error) {
+      console.error('Submit Quiz Error:', error);
+      res.status(500).json({ success: false, message: 'Failed to submit quiz', error: error.message });
+    }
+  }
+  async getCrystalCount(req, res) {
+    try {
+      const { userId } = req.params;
+      const userCrystalData = await CrystalInfo.findOne({ userId });
+      const crystalCount = userCrystalData ? userCrystalData.crystal : 0;
+      res.json({ success: true, count: crystalCount });
+    } catch (error) {
+      console.error('Get Crystal Count Error:', error);
+      res.status(500).json({ success: false, message: 'Failed to get crystal count', error: error.message });
+    }
+  }
+
 }
 
 export default new studyController();
