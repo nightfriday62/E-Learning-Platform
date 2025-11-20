@@ -3,6 +3,7 @@ import s3Service from '../services/s3Service.js';
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
+import { Quiz } from '../models/quiz.js';
 
 // helper: convert a stored relative URL (e.g. "/uploads/...") to an absolute URL using the incoming request
 const toFullUrl = (req, relativePath) => {
@@ -952,48 +953,6 @@ class CourseController {
         }
     }
 
-    async downloadQuizQuestionImage(req, res) {
-        try {
-            const { quizId, questionId } = req.params;
-            const quiz = await Quiz.findById(quizId);
-            if (!quiz) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Quiz not found'
-                });
-            }
-            const question = quiz.questions.id(questionId);
-            if (!question) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Question not found'
-                });
-            }
-            if (!question.imageUri) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'No image found for this question'
-                });
-            }
-            const filePath = path.join(process.cwd(), question.imageUri.replace(/^\//, ''));
-            if (!fs.existsSync(filePath)) {
-                return res.status(404).json({ success: false, message: 'Question image file not found on server' });
-            }
-            const filename = path.basename(filePath);
-            return res.download(filePath, filename, (err) => {
-                if (err) {
-                    console.error('Error sending question image file:', err);
-                    if (!res.headersSent) {
-                        res.status(500).json({ success: false, message: 'Failed to send question image' });
-                    }
-                }
-            });
-        }
-        catch (error) {
-            console.error('Download Quiz Question Image Error:', error);
-            res.status(500).json({ success: false, message: 'Failed to download question image', error: error.message });
-        }
-    }
 
     async getAllMaterialsHandler(req, res) {
         try {
