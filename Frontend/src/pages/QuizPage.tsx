@@ -228,17 +228,11 @@ const QuizPage: React.FC = () => {
               <div className="text-[#BEC5D2] text-[30px] font-['Tektur'] mb-8">
                 {currentQuestion.text}
               </div>
-              {(currentQuestion as any).imageUrl ? (
                 <img
-                  src={(currentQuestion as any).imageUrl}
-                  alt={currentQuestion.text}
+                  src={`http://localhost:3000/api/study/quiz/${quiz._id}/questions/${(currentQuestion as any)._id}/image`}
+                  alt="No Image"
                   className="w-[500px] h-[431px] object-cover rounded-[20px]"
                 />
-              ) : (
-                <div className="w-[500px] h-[431px] bg-gray-400 rounded-[20px] flex items-center justify-center text-gray-600">
-                  No image
-                </div>
-              )}
             </div>
           </div>
 
