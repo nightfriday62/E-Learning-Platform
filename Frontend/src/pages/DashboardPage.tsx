@@ -9,12 +9,35 @@ export const DashboardPage: React.FC = () => {
 
 
   return (
-    <div className="h-screen bg-transparent flex flex-col overflow-hidden pt-6 md:pt-[95px] relative">
-      <Headers /> 
-      <div className="absolute left-0 right-0 top-[110px] md:top-[110px] z-40 pointer-events-auto">
-        <ShopIcons />
-      </div>
-      
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+      {/* Navigation */}
+      <nav className="bg-white shadow flex-shrink-0">
+        <div className="max-w-7xl mx-20 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link to="/" className="text-2xl font-bold text-[#fab630]">
+                StarLeap
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/profile"
+                className="border-gray-700 text-gray-700 border-2 hover:bg-gray-700 hover:text-white px-3 py-1.5 rounded-md text-sm"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="border-[#A93511] border-2 text-[#A93511]  hover:bg-[#A93511] hover:text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
 
       <div className="flex-1 w-full h-0 overflow-hidden">
         <GameContainer />

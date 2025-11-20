@@ -26,11 +26,11 @@ export interface Module {
   _id: string;
   title: string;
   order: number;
-  isOpen?: boolean;
+  isModuleOpen?: boolean;
   materials: ModuleMaterial[];
   createdAt: string;
   updatedAt: string;
-  stars: number;
+  crystals: number;
 }
 
 

@@ -2,20 +2,29 @@ import React, { useState } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import type { DocumentItem } from '../types/course.types';
+import { useNavigate } from 'react-router-dom';
 
 interface PDFsViewerProps {
   isOpen: boolean;
   documents: DocumentItem[];
+  viewerData: { courseId: string; moduleId: string };
   onClose: () => void;
 }
 
 const PDFsViewer: React.FC<PDFsViewerProps> = ({
   isOpen,
   documents,
+  viewerData,
   onClose,
 }) => {
   const [activeDocumentId, setActiveDocumentId] = useState<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    navigate(`/earn-stars/${viewerData.courseId}/${viewerData.moduleId}`);
+  };
 
   // Reset and set the first document as active when documents change
   React.useEffect(() => {
@@ -79,6 +88,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
               />
             )}
           </button>
+          
         </div>
 
         {/* Document List */}
@@ -136,6 +146,36 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
             </div>
           </div>
         )}
+
+        <button
+          type="button"
+          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          onClick={handleStart}
+        >
+          <img
+            src="assets/images/Level_Elements/Bar.png"
+            alt="bar"
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+            Ready For Challenge
+          </div>
+        </button>
+
+        <button
+          type="button"
+          className="relative w-80 h-auto p-4 justify-center items-center cursor-pointer"
+          onClick={onClose} aria-label="Close PDF viewer"
+        >
+          <img
+            src="assets/images/Level_Elements/Bar3.png"
+            alt="bar"
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-black text-xl font-semibold">
+            Back
+          </div>
+        </button>
       </div>
 
       {/* Main PDF Viewer Area */}
@@ -162,13 +202,13 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
               </>
             )}
           </div>
-          <button onClick={onClose} aria-label="Close PDF viewer">
+          {/* <button onClick={onClose} aria-label="Close PDF viewer">
             <img
               src="/assets/images/PDFViewer/Return-Button.png"
               alt="Return"
               className="w-12"
             />
-          </button>
+          </button> */}
         </div>
 
         {/* PDF Content */}

@@ -20,21 +20,21 @@ export const ProfilePage: React.FC = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-bold text-gray-900">
-                CurioCamp
+                StarLeap
               </Link>
             </div>
             <div className="flex items-center space-x-4">
               <Link
                 to="/dashboard"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                className="border-gray-700 text-gray-700 border-2 hover:bg-gray-700 hover:text-white px-3 py-1.5 rounded-md text-sm"
               >
                 Dashboard
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="border-[#A93511] border-2 text-[#A93511]  hover:bg-[#A93511] hover:text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
               >
-                Logout
+                LogOut
               </button>
             </div>
           </div>
