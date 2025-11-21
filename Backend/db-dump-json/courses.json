@@ -34,7 +34,19 @@
         "createdAt": "2025-11-18T00:00:00.000Z",
         "updateAt": "2025-11-19T00:00:00.000Z",
         "crystals": 0,
-        "isModuleOpen": true
+        "isModuleOpen": true,
+        "materials": [
+          {
+            "materialId": "691fc4007ba8ba772a6b15f7",
+            "type": "pdf",
+            "_id": "691fc75705ded983e7510622"
+          },
+          {
+            "materialId": "691fc4007ba8ba772a6b15f9",
+            "type": "pdf",
+            "_id": "691fc79505ded983e7510623"
+          }
+        ]
       },
       {
         "title": "testModule3",

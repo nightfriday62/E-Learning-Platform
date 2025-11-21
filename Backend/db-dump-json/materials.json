@@ -22,5 +22,29 @@
     "createdAt": "2025-11-11T21:42:47.608Z",
     "updatedAt": "2025-11-11T21:42:47.608Z",
     "__v": 0
+  },
+  {
+    "_id": "691fc4007ba8ba772a6b15f7",
+    "filename": "Unit 3 - Anatomy & Physiology - Presentation.pdf",
+    "type": "pdf",
+    "storageType": "local",
+    "url": "/uploads/courses/6912adcf0cceb3d617e5d0c4/modules/691d6020f677ef939c54962e/6d563cea-8471-4a96-a66f-ea5bce1bb118.pdf",
+    "cloudKey": null,
+    "courseId": "6912adcf0cceb3d617e5d0c4",
+    "createdAt": "2025-11-21T01:44:32.454Z",
+    "updatedAt": "2025-11-21T01:44:32.454Z",
+    "__v": 0
+  },
+  {
+    "_id": "691fc4007ba8ba772a6b15f9",
+    "filename": "Unit 3 - Anatomy & Physiology - Teaching Notes.pdf",
+    "type": "pdf",
+    "storageType": "local",
+    "url": "/uploads/courses/6912adcf0cceb3d617e5d0c4/modules/691d6020f677ef939c54962e/6d563cea-8471-4a96-a66f-ea5bce1bb118.pdf",
+    "cloudKey": null,
+    "courseId": "6912adcf0cceb3d617e5d0c4",
+    "createdAt": "2025-11-21T01:44:32.455Z",
+    "updatedAt": "2025-11-21T01:44:32.455Z",
+    "__v": 0
   }
 ]
