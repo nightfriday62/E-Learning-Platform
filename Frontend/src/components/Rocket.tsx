@@ -2,7 +2,7 @@
 
 export const Rocket = () => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="92" height="66" viewBox="0 0 92 66" fill="none">
+        <svg className="rocket-float" xmlns="http://www.w3.org/2000/svg" width="92" height="66" viewBox="0 0 92 66" fill="none">
   <rect x="91.0986" y="31.6056" width="3.25351" height="3.02112" transform="rotate(90 91.0986 31.6056)" fill="#E99A20"/>
   <rect x="88.0771" y="28.3523" width="3.25351" height="3.02112" transform="rotate(90 88.0771 28.3523)" fill="#E99A20"/>
   <rect x="88.0771" y="31.6057" width="3.25351" height="3.02112" transform="rotate(90 88.0771 31.6057)" fill="#E99A20"/>

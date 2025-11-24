@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Headers } from '../components/Header';
 
 const QuizIntro: React.FC = () => {
   const navigate = useNavigate();
@@ -21,45 +20,11 @@ const QuizIntro: React.FC = () => {
   const bgUrl = '/assets/images/Quiz/quiz-bg.png';
   const introbgUrl = '/assets/images/Quiz/quiz-intro-bg.png';
 
-  const { logout } = useAuth();
-  
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
 
   return (
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Navigation */}
-      <nav className="bg-white shadow flex-shrink-0">
-        <div className="max-w-7xl mx-20 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-[#fab630]">
-                StarLeap
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/profile"
-                className="border-gray-700 text-gray-700 border-2 hover:bg-gray-700 hover:text-white px-3 py-1.5 rounded-md text-sm"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="border-[#A93511] border-2 text-[#A93511]  hover:bg-[#A93511] hover:text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Headers />
 
       {/* Main Content */}
       <div
@@ -93,7 +58,7 @@ const QuizIntro: React.FC = () => {
             <div className='flex justify-center items-center'>
               <button
               type="button"
-              className="relative w-100 h-auto p-4 justify-center items-center cursor-pointer"
+              className="relative w-100 h-auto p-4 justify-center items-center cursor-pointer opacity-100 hover:opacity-90 transition-opacity"
               onClick={handleStart}
               >
                 <img
@@ -113,7 +78,7 @@ const QuizIntro: React.FC = () => {
               </span>
               <button
                 type="button"
-                className="relative w-50 h-auto p-4 justify-center items-center cursor-pointer"
+                className="relative w-50 h-auto p-4 justify-center items-center cursor-pointer opacity-60 hover:opacity-100 transition-opacity"
                 onClick={handleBack}
               >
                 <img

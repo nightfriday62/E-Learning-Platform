@@ -23,7 +23,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
   const navigate = useNavigate();
 
   const handleStart = () => {
-    navigate(`/earn-stars/${viewerData.courseId}/${viewerData.moduleId}`);
+    navigate(`/quiz-intro/${viewerData.courseId}/${viewerData.moduleId}`);
   };
 
   // Reset and set the first document as active when documents change
@@ -157,7 +157,7 @@ const PDFsViewer: React.FC<PDFsViewerProps> = ({
             alt="bar"
             className="w-full h-full"
           />
-          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold opacity-60 hover:opacity-100 transition-opacity">
             Ready For Challenge
           </div>
         </button>

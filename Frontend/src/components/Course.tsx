@@ -108,7 +108,7 @@ export const Course = (course: CourseProps) => {
         <div className="mx-9 flex flex-row items-center py-30 w-max ">
           {course.modules &&
             course.modules.map((module) => {
-              const isUnlocked =  module.isModuleOpen === true;
+              const isUnlocked = module.isModuleOpen;
               if (!isUnlocked) {
                 return (
                   <div
@@ -162,6 +162,7 @@ export const Course = (course: CourseProps) => {
                     
                     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-1 z-10">
                       {Array.from({ length: 3 }).map((_, i) => (
+                        
                         <img
                           key={i}
                           src={
@@ -174,6 +175,8 @@ export const Course = (course: CourseProps) => {
                         />
                       ))}
                     </div>
+
+                    
 
                     {module.crystals === 0 ? (
                       // START button

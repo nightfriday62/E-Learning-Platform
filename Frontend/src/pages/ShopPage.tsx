@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Headers } from '../components/Header';
 import 'simplebar/dist/simplebar.min.css';
 import { ShopIcons } from '../components/ShopIcon';
@@ -13,7 +12,6 @@ interface GiftItem {
 }
 
 export const ShopPage: React.FC = () => {
-  const navigate = useNavigate();
   const bgUrl = '/assets/images/Quiz/quiz-bg.png';
 
   const giftItems: GiftItem[] = [
