@@ -12,6 +12,7 @@ router.use(authenticateToken);
 router.get('/:userId/courses', studyController.getCourses);
 router.get('/quiz/:courseId/:moduleId', studyController.getQuiz);
 router.post('/user/:userId/quiz/:quizId/attempt', studyController.submitQuiz);
+router.post("/crystals/:userId/redeem", studyController.redeemItem);
 
 
 export default router

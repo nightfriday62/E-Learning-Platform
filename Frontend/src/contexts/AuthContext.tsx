@@ -10,19 +10,21 @@ interface AuthContextType {
   login: (userName: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
+
+  crystals: number;
+  setCrystals: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = 'http://localhost:3000';
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user;
+  const [crystals, setCrystals] = useState(0);
 
   // Authentication methods
   const login = async (userName: string, password: string) => {
@@ -72,13 +74,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await makeAuthenticatedRequest(
-          '/api/auth/profile',
-          {},
-          () => {
-            setUser(null);
-          }
-        );
+        const response = await makeAuthenticatedRequest('/api/auth/profile', {}, () => {
+          setUser(null);
+        });
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
@@ -94,6 +92,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      makeAuthenticatedRequest(`/api/study/crystals/${user._id}/count`)
+        .then((res) => (res.ok ? res.json() : { count: 0 }))
+        .then((data) => setCrystals(data.count))
+        .catch(() => setCrystals(0));
+    }
+  }, [user]);
+
   const value: AuthContextType = {
     user,
     isLoading,
@@ -101,6 +108,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     login,
     logout,
     refreshToken,
+    crystals,
+    setCrystals,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

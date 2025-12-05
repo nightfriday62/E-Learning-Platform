@@ -225,6 +225,48 @@ class studyController {
       });
     }
   }
+
+  async redeemItem(req, res) {
+    try {
+      const { userId } = req.params;
+      const { price, itemId } = req.body;
+
+      // find the user's crystal wallet
+      const crystalInfo = await CrystalInfo.findOne({ userId });
+
+      if (!crystalInfo) {
+        return res.status(404).json({
+          success: false,
+          message: "Crystal info not found",
+        });
+      }
+
+      // Check balance
+      if (crystalInfo.totalCrystals < price) {
+        return res.status(400).json({
+          success: false,
+          message: "Not enough crystals",
+        });
+      }
+
+      // Deduct crystals
+      crystalInfo.totalCrystals -= price;
+
+      await crystalInfo.save();
+
+      return res.json({
+        success: true,
+        message: "Redeemed successfully",
+        newTotal: crystalInfo.totalCrystals,
+      });
+    } catch (err) {
+      console.error("Redeem error:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error while redeeming",
+      });
+    }
+  }
 }
 
 export default new studyController();

@@ -1,35 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { makeAuthenticatedRequest } from '../utils/api';
-import { useEffect, useState } from 'react';
 
 export function ShopIcons() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user } = useAuth();
-    // const numCrystals = makeAuthenticatedRequest(`/api/study/crystals/${user?._id}/count`, {
-    //     method: 'GET',
-    // }).then(res => res.ok ? res.json().then(data => data.count) : 0).catch(() => 0);
     const isShopPage = location.pathname === "/shop";
-    const [numCrystals, setNumCrystals] = useState(0);
 
-    useEffect(() => {
-        if (user) {
-            makeAuthenticatedRequest(`/api/study/crystals/${user._id}/count`, {
-                method: 'GET'
-            })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json().then(data => {
-                            setNumCrystals(data.count);
-                        });
-                    } else {
-                        setNumCrystals(0);
-                    }
-                })
-                .catch(() => setNumCrystals(0));
-        }
-    }, [user]);
+    const { crystals } = useAuth();
 
     return (
         <div className="flex items-center gap-6 md:pl-8 mx-18 pt-5">
@@ -40,7 +17,7 @@ export function ShopIcons() {
                     className="w-35"
                 />
                 <div className="absolute inset-0 flex items-center justify-end pr-10 text-[#561A2D] font-bold text-2xl pointer-events-none">
-                    {numCrystals}
+                    {crystals}
                 </div>
             </div>
 

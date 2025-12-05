@@ -43,7 +43,7 @@ const moduleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    isOpen: {
+    isModuleOpen: {
         type: Boolean,
         default: false
     },

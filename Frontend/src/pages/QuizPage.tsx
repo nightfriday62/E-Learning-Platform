@@ -199,7 +199,7 @@ const QuizPage: React.FC = () => {
                         ${
                           !selections[currentIndex]
                             ? 'bg-white text-[#45413C]' // BEFORE selection
-                            : isSelected && option.isCorrect
+                            : option.isCorrect
                               ? 'bg-[#78A888] text-white' // CORRECT
                               : isSelected && !option.isCorrect
                                 ? 'bg-[#D96A6A] text-white' // WRONG
@@ -212,7 +212,7 @@ const QuizPage: React.FC = () => {
                           className={`w-[60%] mb-2 text-left text-xl font-semibold ${
                             isCorrect ? 'text-[#78A888]' : 'text-[#D96A6A]'
                           }`}>
-                          {isCorrect ? 'Correct!' : 'Wrong!'}
+                          {isCorrect ? 'Correct!' : 'Almost! Take another look.'}
                         </div>
                       )}
                     </div>
@@ -230,13 +230,6 @@ const QuizPage: React.FC = () => {
                       ? 'Submitting...'
                       : 'Submit'}
                 </button>
-                {/* <button
-                    onClick={handlePrevious}
-                    disabled={currentIndex === 0 || submitting}
-                    className="next-button w-[286px] h-[49px] bg-[#B17F9E] rounded-[20px] text-white text-[24px] font-['Inter'] font-bold mt-4 disabled:opacity-45 transition-opacity"
-                    style={{ boxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.25)' }}>
-                    Previous
-                  </button> */}
               </div>
             </div>
           </div>
