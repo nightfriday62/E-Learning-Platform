@@ -20,7 +20,7 @@ const QuizPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
-  const { user } = useAuth();
+  const { user, crystals, setCrystals } = useAuth();
   const { fetchCourses } = useCourses();
   const fetchQuiz = useCallback(async () => {
     if (!courseId || !moduleId) return;
@@ -117,6 +117,7 @@ const QuizPage: React.FC = () => {
       await fetchCourses();
 
       setFinalScore(correctCount);
+      setCrystals((prev) => prev + 3);
       setQuizCompleted(true);
     } catch (err) {
       console.error('Submit failed', err);
