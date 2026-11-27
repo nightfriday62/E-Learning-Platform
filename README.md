@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-CurioCamp is a learning application with courses, study materials, quizzes, and
+E-Learning is a learning application with courses, study materials, quizzes, and
 progress tracking. It includes student and instructor functionality and an
 administration API. The frontend is built with React, TypeScript, Vite, and
 Tailwind CSS; the backend uses Express, MongoDB, and Mongoose.
@@ -98,4 +98,3 @@ Backend/
 The React frontend sends HTTP requests to the Express API. The API handles
 authentication, courses, progress, instructor operations, study activities,
 and administration under `/api/`, and stores application data in MongoDB.
-Some file operations use Amazon S3.
