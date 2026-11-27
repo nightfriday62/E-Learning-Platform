@@ -7,16 +7,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { MongoClient, ObjectId } from 'mongodb';
+import { getDatabaseName } from '../src/config/databaseName.js';
 
-const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/curiocampauth';
-let dbName = process.env.MONGO_DB;
-// if (!dbName) {
-//   const m = uri.match(/\/([^/?]+)(\?|$)/);
-//   dbName = (m && m[1]) || 'curiocamp';
-// }
+const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const inDir = path.resolve(process.cwd(), 'db-dump-json');
 
 async function run() {
+  const dbName = getDatabaseName();
   const client = new MongoClient(uri);
   await client.connect();
   const db = client.db(dbName);

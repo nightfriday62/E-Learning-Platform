@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { getDatabaseName } from '../config/databaseName.js';
 
 
 const userSchema = new mongoose.Schema({
@@ -149,9 +150,9 @@ export const createUser = async (userData) => {
 if (true) {
   (async () => {
     try {
-      const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/curiocampauth';
+      const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
       if (mongoose.connection.readyState === 0) {
-        await mongoose.connect(MONGODB_URI);
+        await mongoose.connect(MONGODB_URI, { dbName: getDatabaseName() });
       }
 
       const username = 'student';

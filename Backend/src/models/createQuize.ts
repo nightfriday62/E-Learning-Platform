@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
 import { Quiz } from './quiz.js';
+import { getDatabaseName } from '../config/databaseName.js';
 
 async function run() {
-  await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/curiocampauth');
+  await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017', {
+    dbName: getDatabaseName()
+  });
 
   const quiz = new Quiz({
     courseId: new mongoose.Types.ObjectId('6912adcf0cceb3d617e5d0c4'),

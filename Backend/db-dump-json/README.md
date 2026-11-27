@@ -10,6 +10,12 @@ Import collections from `db-dump-json/` into the database (this will replace dat
 
   npm run db:import
 
-You can set `MONGO_URI` and `MONGO_DB` environment variables to control the target database. By default the scripts use `mongodb://localhost:27017` and database `curiocamp`.
+The scripts load `Backend/.env` when run from the backend directory. Set
+`MONGO_DB` to the target database name; it is required and overrides any
+database name in the URI. Set `MONGO_URI` to the MongoDB server URI for these
+scripts; it defaults to `mongodb://localhost:27017`. The application server
+uses `MONGODB_URI` instead, so set `MONGO_URI` separately when importing or
+exporting a remote database. Check both settings before importing, since
+the import replaces data.
 
 Do NOT commit sensitive data. These files are useful for sharing small development datasets.
