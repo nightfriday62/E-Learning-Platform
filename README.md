@@ -1,4 +1,4 @@
-# CurioCamp
+# E-Learning Platform
 
 ## 1. Introduction
 
